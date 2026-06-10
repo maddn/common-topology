@@ -1,0 +1,51 @@
+submodule common-topology {
+  yang-version 1.1;
+  belongs-to @PARENT_MODULE@ {
+    prefix @PARENT_PREFIX@;
+  }
+
+  import tailf-common {
+    prefix tailf;
+  }
+
+  grouping topology-grouping {
+    description
+      "Common topology structure. The using module must augment
+       topology/devices with a device list that provides device-name.";
+
+    list topology {
+      key name;
+
+      leaf name {
+        type string;
+      }
+
+      container devices;
+
+      container links {
+        description "Point to point links between devices in the toplogy.";
+
+        list link {
+          key "a-end-device z-end-device";
+
+          leaf a-end-device {
+            type string;
+            tailf:non-strict-leafref {
+              path "../../../devices/device/device-name";
+            }
+          }
+
+          leaf z-end-device {
+            type string;
+            tailf:non-strict-leafref {
+              path "../../../devices/device/device-name";
+            }
+            must ". != ../a-end-device" {
+              error-message "a-end-device and z-end-device must be different";
+            }
+          }
+        }
+      }
+    }
+  }
+}
