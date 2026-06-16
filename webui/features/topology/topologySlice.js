@@ -118,7 +118,7 @@ const topologySlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase('menu/serviceToggled', (state) => {
+    builder.addCase('menu/setOpenService', (state) => {
       state.highlightedIcons = [];
     });
   }

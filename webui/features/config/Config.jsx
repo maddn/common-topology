@@ -198,7 +198,7 @@ class Config extends PureComponent {
 
   highlightService(highlightedConfig) {
     const { format, serviceMetaData } = this.state;
-    const { openService } = this.props;
+    const { serviceReferences } = this.props;
 
     const backpointerRegex = this.getBackpointerRegex();
     const refcountRegex = this.getRefcountRegex();
@@ -246,7 +246,8 @@ class Config extends PureComponent {
             ({ value, done } = iter.next());
           } else {
             processBlock(backpointer ?
-              backpointer.includes(openService) : highlight);
+              serviceReferences.some(reference =>
+                backpointer.includes(reference)) : highlight);
             backpointer = undefined;
           }
         }

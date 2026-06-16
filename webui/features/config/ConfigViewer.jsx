@@ -7,7 +7,8 @@ import Config from './Config';
 import { usePlatformsQuery, useDevicesQuery } from 'features/topology/Icon';
 import { getExpandedIcons,
          getConfigViewerVisible } from 'features/topology/topologySlice';
-import { getOpenTopology, getOpenService } from 'features/menu/menuSlice';
+import { getOpenTopology,
+         getOpenServiceReferences } from 'features/menu/menuSlice';
 
 const DefaultConfigHeaderActions = () => null;
 const getNsoDeviceEditorKeypath = (device) =>
@@ -20,7 +21,8 @@ function ConfigViewer({
   const expandedIcons = useSelector((state) => getExpandedIcons(state));
   const configViewerVisible = useSelector((state) => getConfigViewerVisible(state));
   const openTopology = useSelector((state) => getOpenTopology(state));
-  const openService = useSelector((state) => getOpenService(state));
+  const serviceReferences = useSelector((state) =>
+    getOpenServiceReferences(state));
   const platforms = usePlatformsQuery().data;
   const devices = useDevicesQuery().data;
 
@@ -42,7 +44,7 @@ function ConfigViewer({
               editorKeypath={getDeviceEditorKeypath(device) ||
                 getNsoDeviceEditorKeypath(device)}
               managed={platforms.find(({ parentName }) => parentName === icon)}
-              openService={openService}
+              serviceReferences={serviceReferences}
               openTopology={openTopology}
               ConfigHeaderActions={ConfigHeaderActions}/>;
           })}

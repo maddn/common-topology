@@ -23,7 +23,7 @@ const topologyPersistConfig = {
 const menuPersistConfig = {
   key: 'menu',
   storage: storage,
-  whitelist: [ 'openTopology', 'openService' ]
+  whitelist: [ 'openTopology', 'openContext', 'openService' ]
 };
 
 export const store = configureStore({

@@ -21,7 +21,7 @@ const NodePane = memo(function NodePane({
   console.debug('NodePane Render');
 
   const toggle = useCallback(() => {
-    Object.keys(rest).length > 0 && nodeToggled(keypath);
+    nodeToggled && nodeToggled(keypath);
   }, [ keypath, nodeToggled ]);
 
   const dispatch = useDispatch();
@@ -70,7 +70,7 @@ const NodePane = memo(function NodePane({
         </Fragment>
       }>
       {subHeader}
-      {rest && <FieldGroup { ...rest } />}
+      {Object.keys(rest).length > 0 && <FieldGroup { ...rest } />}
       {children}
     </Accordion>
   );
