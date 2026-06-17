@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import Accordion from 'features/common/Accordion';
 import InlineBtn from 'features/common/buttons/InlineBtn';
 
-import { CONFIGURATION_EDITOR_EDIT_URL } from 'constants/Layout';
+import { configurationEditorUrl } from 'features/nso/WebuiOne';
 import * as IconTypes from 'constants/Icons';
 
 import { useCreateMutation } from 'api/data';
@@ -21,7 +21,7 @@ function CreatableService({ label, keypath }) {
   const [ create ] = useCreateMutation();
   const createNode = useCallback(() => {
     create({ keypath });
-    dispatch(stopThenGoToUrl(CONFIGURATION_EDITOR_EDIT_URL + keypath));
+    dispatch(stopThenGoToUrl(configurationEditorUrl(keypath, true)));
   });
 
   return (

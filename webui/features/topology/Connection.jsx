@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import classNames from 'classnames';
 
-import { CONFIGURATION_EDITOR_EDIT_URL } from 'constants/Layout';
+import { configurationEditorUrl } from 'features/nso/WebuiOne';
 import { BTN_DRAG, BTN_DELETE, BTN_GOTO } from 'constants/Icons';
 import { CIRCLE_ICON_RATIO, LINE_ICON_RATIO } from 'constants/Layout.js';
 
@@ -134,7 +134,7 @@ const Connection = memo(function Connection({
 
   const goToConn = useCallback((event) => {
     event.stopPropagation();
-    dispatch(stopThenGoToUrl(CONFIGURATION_EDITOR_EDIT_URL + keypath));
+    dispatch(stopThenGoToUrl(configurationEditorUrl(keypath)));
   }, []);
 
   const { x: x1, y: y1, ...aEndIcon } = useIconPosition(aEndDevice);

@@ -48,10 +48,15 @@ class GetDeviceConfiguration(Action):
             config_id = maapi.save_config(trans.maapi.msock, trans.th,
                                           format_flags, str(kp) + '/config')
 
-            sock = socket.socket()
-            # pylint: disable=no-member
-            _ncs.stream_connect(sock, config_id, 0,
-                                '127.0.0.1', _ncs.NCS_PORT)
+            sock = socket.socket(trans.maapi.msock.family)
+            peername = trans.maapi.msock.getpeername()
+            if isinstance(peername, tuple):
+                ip, port = peername
+                # pylint: disable=no-member
+                _ncs.stream_connect(sock, config_id, 0, ip, port)
+            else:
+                # pylint: disable=no-member
+                _ncs.stream_connect(sock, config_id, 0, path=peername)
             config_bytes = b''
             while 1:
                 data = sock.recv(1024)

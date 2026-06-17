@@ -6,7 +6,7 @@ import * as IconTypes from 'constants/Icons';
 
 import hljs from 'highlight.js';
 
-import { CONFIGURATION_EDITOR_EDIT_URL } from 'constants/Layout';
+import { configurationEditorUrl } from 'features/nso/WebuiOne';
 import Accordion from 'features/common/Accordion';
 import InlineBtn from 'features/common/buttons/InlineBtn';
 
@@ -187,7 +187,7 @@ class Config extends PureComponent {
   async goToDevice(event, action) {
     event.stopPropagation();
     const { editorKeypath, stopThenGoToUrl } = this.props;
-    stopThenGoToUrl(`${CONFIGURATION_EDITOR_EDIT_URL}${editorKeypath}`);
+    stopThenGoToUrl(configurationEditorUrl(editorKeypath));
   }
 
   terminalToggled(event) {

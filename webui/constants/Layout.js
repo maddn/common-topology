@@ -1,7 +1,5 @@
-export const CONFIGURATION_EDITOR_URL = '/webui-one/ConfigurationEditor';
-export const CONFIGURATION_EDITOR_EDIT_URL = `${CONFIGURATION_EDITOR_URL}/edit-config/containers/widgets`;
-export const CONFIGURATION_EDITOR_ACTIONS_URL = `${CONFIGURATION_EDITOR_URL}/actions/none/widgets`;
-export const COMMIT_MANAGER_URL = '/webui-one/CommitManager';
+export const CONFIGURATION_EDITOR_URL = '/webui-one/ConfigEditor';
+export const COMMIT_MANAGER_URL = '/webui-one/Transactions/Uncommitted';
 export const LOGIN_URL = '/login.html';
 
 export const ICON_INITIAL_MAX_SIZE_PC = 10;

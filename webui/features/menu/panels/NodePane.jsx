@@ -2,7 +2,7 @@ import React from 'react';
 import { Fragment, memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { CONFIGURATION_EDITOR_EDIT_URL } from 'constants/Layout';
+import { configurationEditorUrl } from 'features/nso/WebuiOne';
 import * as IconTypes from 'constants/Icons';
 
 import FieldGroup from 'features/common/FieldGroup';
@@ -27,7 +27,7 @@ const NodePane = memo(function NodePane({
   const dispatch = useDispatch();
   const goToNode = useCallback((event) => {
     event.stopPropagation();
-    dispatch(stopThenGoToUrl(CONFIGURATION_EDITOR_EDIT_URL + keypath));
+    dispatch(stopThenGoToUrl(configurationEditorUrl(keypath)));
   });
 
   const [ deletePath ] = useDeletePathMutation();

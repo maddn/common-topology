@@ -11,7 +11,10 @@ import Header from './Header';
 import { getError, getHasWriteTransaction, getCommitInProgress,
          getBodyOverlayVisible, handleError } from './nsoSlice';
 import { getSystemSetting } from 'api';
+import { CONFIGURATION_EDITOR_URL } from 'constants/Layout';
 
+export const configurationEditorUrl = (keypath, edit = false) =>
+  `${CONFIGURATION_EDITOR_URL}${keypath}${edit ? '?edit=true' : ''}`;
 
 const mapStateToProps = state => ({
   error: getError(state),

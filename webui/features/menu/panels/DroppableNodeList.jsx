@@ -5,7 +5,7 @@ import { useDrop } from 'react-dnd';
 import classNames from 'classnames';
 
 import { DEVICE } from 'constants/ItemTypes';
-import { CONFIGURATION_EDITOR_EDIT_URL } from 'constants/Layout';
+import { configurationEditorUrl } from 'features/nso/WebuiOne';
 
 import NodePane from './NodePane';
 import NodeListWrapper from './NodeListWrapper';
@@ -50,7 +50,7 @@ function DroppableNodeList({
         await createNode(key);
         if (dropBehaviour === DROP_BEHAVIOUR_GOTO) {
           dispatch(stopThenGoToUrl(
-            `${CONFIGURATION_EDITOR_EDIT_URL}${keypath}{${key}}`));
+            configurationEditorUrl(`${keypath}{${key}}`, true)));
         }
       } else {
         ref.current.openNewItem(

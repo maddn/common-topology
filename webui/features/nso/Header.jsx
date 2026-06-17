@@ -41,7 +41,7 @@ function Header({ user, version, title, hasWriteTransaction, commitInProgress })
         <InlineBtn
           disabled={!hasWriteTransaction || commitInProgress}
           label="Revert"
-          tooltip="Revert transaction now without going to Commit Manager"
+          tooltip="Revert transaction now without going to Transactions"
           onClick={revertTransaction}
         />
         <InlineBtn
@@ -53,7 +53,7 @@ function Header({ user, version, title, hasWriteTransaction, commitInProgress })
                 <span className="loading__dot"/>
               </span>
             : 'Commit'}
-          tooltip="Commit transaction now without going to Commit Manager"
+          tooltip="Commit transaction now without going to Transactions"
           onClick={commitTransaction}
         />
         <button className="btn__header" onClick={goToCommitManager}>
