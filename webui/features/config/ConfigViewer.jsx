@@ -2,13 +2,18 @@ import './config.css';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import Sidebar from 'features/common/Sidebar';
-import Config from './Config';
 import { usePlatformsQuery, useDevicesQuery } from 'features/topology/Icon';
 import { getExpandedIcons,
          getConfigViewerVisible } from 'features/topology/topologySlice';
 import { getOpenTopology,
          getOpenServiceReferences } from 'features/menu/menuSlice';
+
+import Sidebar from 'features/common/Sidebar';
+import SidebarSection from 'features/common/SidebarSection';
+
+import Config from './Config';
+import OutOfBandPolicies from './OutOfBandPolicies';
+
 
 const DefaultConfigHeaderActions = () => null;
 const getNsoDeviceEditorKeypath = (device) =>
@@ -27,11 +32,12 @@ function ConfigViewer({
   const devices = useDevicesQuery().data;
 
   return (
-    <Sidebar right={true} hidden={!configViewerVisible}>
-      <div className="header">
-        <div className="header__title-text">Config Viewer</div>
-      </div>
-      <div className="accordion__group">
+    <Sidebar
+      right={true}
+      hidden={!configViewerVisible}
+      footer={<OutOfBandPolicies />}
+    >
+      <SidebarSection title="Config Viewer">
         {devices && platforms && expandedIcons && expandedIcons.map(
           icon => {
             const device = devices?.find(({ name }) => name === icon);
@@ -48,7 +54,7 @@ function ConfigViewer({
               openTopology={openTopology}
               ConfigHeaderActions={ConfigHeaderActions}/>;
           })}
-      </div>
+      </SidebarSection>
     </Sidebar>
   );
 }

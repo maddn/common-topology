@@ -22,17 +22,28 @@ class Sidebar extends Component {
 
   render() {
     console.debug('Sidebar Render');
+    const { children, footer, hidden } = this.props;
+
     return (
       <div ref={this.ref} className={classNames('sidebar', {
-        'sidebar--hidden': this.props.hidden
+        'sidebar--hidden': hidden
       })}>
-        <div ref={this.innerRef} className="sidebar__inner">
+        <div
+          ref={this.innerRef}
+          className="sidebar__inner"
+        >
           <ReactResizeDetector handleHeight
             onResize={this.resize}
             refreshMode="debounce"
             refreshRate={500}
           />
-          {this.props.children}
+          <div className="sidebar__body">
+            {children}
+          </div>
+          {footer &&
+            <div className="sidebar__footer">
+              {footer}
+            </div>}
         </div>
       </div>
     );

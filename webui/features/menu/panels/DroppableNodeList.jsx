@@ -18,6 +18,10 @@ export const DROP_BEHAVIOUR_CREATE_ONLY = 0;
 export const DROP_BEHAVIOUR_OPEN_NEW_ITEM = 1;
 export const DROP_BEHAVIOUR_GOTO = 2;
 
+const removeEmptyFields = data => Object.fromEntries(Object.entries(data)
+  .filter(([, value]) =>
+    value !== undefined && value !== null && value !== ''));
+
 function DroppableNodeList({
   label, keypath, noTitle,
   baseSelect, labelSelect, isLeafList, selector,
@@ -96,7 +100,7 @@ function DroppableNodeList({
             fade={!!openNode}
             nodeToggled={toggled}
             disableGoTo={disableGoTo}
-            { ...swapLabels(item, labelSelect) }
+            { ...swapLabels(removeEmptyFields(item), labelSelect) }
           />
         )}
       </NodeListWrapper>

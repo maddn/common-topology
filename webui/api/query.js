@@ -83,21 +83,31 @@ export function createItemsSelectorWithArray(keyValues) {
   );
 }
 
-export function createItemsSelector(key, value) {
+export function createItemsSelector(key, value, sortKey) {
   return createSelector(
     res => res.data,
     res => res.isFetching,
     res => res.isSuccess,
     res => res.isError,
-    (raw, isFetching, isSuccess, isError) => ({
-      data: raw?.reduce((accumulator, item) => {
+    (raw, isFetching, isSuccess, isError) => {
+      const data = raw?.reduce((accumulator, item) => {
         const { [key]: itemKey, ...data } = item;
         if (itemKey === value) {
           accumulator.push(data);
         }
         return accumulator;
-      }, []), isFetching, isSuccess, isError
-    })
+      }, []);
+
+      return {
+        data: sortKey && data
+          ? [ ...data ].sort((a, b) =>
+              Number(a[sortKey] || 0) - Number(b[sortKey] || 0))
+          : data,
+        isFetching,
+        isSuccess,
+        isError
+      };
+    }
   );
 }
 

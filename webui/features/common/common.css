@@ -291,17 +291,37 @@ button {
 }
 
 .sidebar__inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.sidebar__body,
+.sidebar__footer {
+  flex: 0 0 auto;
+}
+
+.sidebar__footer {
+  margin-top: auto;
 }
 
 .sidebar--hidden > .sidebar__inner {
   overflow: hidden;
 }
 
-.sidebar__inner > .header {
+.sidebar__inner > .header,
+.sidebar__body > .header,
+.sidebar__footer > .header {
   background-color: var(--background);
   position: sticky;
   top: -1rem;
   z-index: 1;
+}
+
+.sidebar__body > .header:not(:first-child),
+.sidebar__footer > .header,
+.sidebar__body > .accordion--container-only > .accordion__panel > .header {
+  margin-top: 0.5rem;
 }
 
 
@@ -501,18 +521,29 @@ button {
 
 .field-group__label {
   color: var(--secondary-text);
-  flex: 1 1 auto;
+  flex: 1 0 auto;
   font-size: 0.75em;
   overflow: hidden;
   font-weight: 700;
 }
 
-.field-group__value {
+.field-group__value-wrapper {
+  direction: rtl;
+  flex: 0 1 auto;
+  overflow: hidden;
   padding-left: 0.5em;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
   -webkit-user-select: text;
+}
+
+.field-group__value-text {
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 
