@@ -283,7 +283,9 @@ class Config extends PureComponent {
         right={true}
         startOpen={false}
         variableHeight={true}
-        header={<Fragment>
+        title={<Fragment>{device}{!managed && ' (unmanaged)'}</Fragment>}
+        isFetching={isFetching}
+        leadingActions={<Fragment>
           <InlineBtn
             icon={IconTypes.BTN_CONSOLE}
             hidden={consoleState !== 'Disconnected'}
@@ -303,13 +305,8 @@ class Config extends PureComponent {
             tooltip={'Disconnect from device console'}
             onClick={this.terminalToggled}
           />
-          <span className="header__title-text">{device}{
-            !managed && ' (unmanaged)'}</span>
-          {isFetching && <div className="loading__dots">
-            <span className="loading__dot"/>
-            <span className="loading__dot"/>
-            <span className="loading__dot"/>
-          </div>}
+        </Fragment>}
+        trailingActions={<Fragment>
           <InlineBtn
             icon={IconTypes.BTN_GOTO}
             tooltip={'View device in Configuration Editor'}

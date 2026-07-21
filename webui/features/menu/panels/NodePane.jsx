@@ -36,6 +36,8 @@ const NodePane = memo(function NodePane({
     await deletePath({ keypath, queryKey });
     if (isOpen) { toggle(); }
   });
+  const headerTitle = <Fragment>{underscore ?
+    <u>{title.charAt(0)}</u> : title.charAt(0)}{title.substr(1)}</Fragment>;
 
   return (
     <Accordion
@@ -44,10 +46,9 @@ const NodePane = memo(function NodePane({
       fade={fade}
       toggle={toggle}
       variableHeight={true}
-      header={
+      title={headerTitle}
+      trailingActions={
         <Fragment>
-          <span className="header__title-text">{underscore ?
-            <u>{title.charAt(0)}</u> : title.charAt(0)}{title.substr(1)}</span>
           {!disableGoTo &&
             <InlineBtn
               icon={IconTypes.BTN_GOTO}

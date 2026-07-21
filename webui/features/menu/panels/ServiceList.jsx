@@ -64,6 +64,7 @@ export function ServiceList({
             <Accordion
               isOpen={context === contextName}
               variableHeight={true}
+              isContainerOnly={true}
             >
               {services.filter((service, index) =>
                 getContextName(service) === context &&

@@ -318,11 +318,22 @@ button {
   transition: padding 400ms ease-out, margin 400ms ease-out, height 400ms ease-out;
 }
 
+.accordion--container-only {
+  background: transparent;
+  font-size: inherit;
+}
+
 .accordion__header {
   cursor: pointer;
   display: flex;
   align-items: center;
   transition: all 400ms ease-out;
+}
+
+.accordion__header-height-anchor {
+  flex: 0 0 0;
+  height: 2rem;
+  overflow: hidden;
 }
 
 .accordion--open > .accordion__header {

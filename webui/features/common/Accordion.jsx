@@ -53,19 +53,40 @@ class Accordion extends PureComponent {
 
   render() {
     console.debug('Accordion Render');
-    const { fade, level, variableHeight, right, header, children } = this.props;
+    const { fade, level, variableHeight, right, title, isFetching,
+      leadingActions, trailingActions, isContainerOnly, children
+    } = this.props;
 
     const isOpen = this.isOpen();
+    const hasHeader = title !== undefined || isFetching ||
+      leadingActions || trailingActions;
 
     const accordion =
-      <div className={classNames({
-        [ `accordion accordion--level${level}` ]: level,
+      <div className={classNames('accordion', {
+        [ `accordion--level${level}` ]: level,
+        'accordion--container-only': isContainerOnly,
         'accordion--right': right,
         'accordion--open': isOpen,
         'accordion--closed-fade': !isOpen && fade,
         'accordion--closed': !isOpen
       })}>
-        <div className="accordion__header" onClick={this.toggle}>{header}</div>
+        {hasHeader &&
+          <div className="accordion__header" onClick={this.toggle}>
+            {leadingActions}
+            <span
+              className="accordion__header-height-anchor"
+              aria-hidden="true"
+            />
+            {title !== undefined &&
+              <span className="header__title-text">{title}</span>}
+            {isFetching &&
+              <div className="loading__dots">
+                <span className="loading__dot"/>
+                <span className="loading__dot"/>
+                <span className="loading__dot"/>
+              </div>}
+            {trailingActions}
+          </div>}
         <div
           ref={this.ref}
           className="accordion__panel"

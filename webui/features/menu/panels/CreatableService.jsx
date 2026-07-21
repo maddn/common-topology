@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fragment, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import Accordion from 'features/common/Accordion';
@@ -25,19 +25,17 @@ function CreatableService({ label, keypath }) {
   });
 
   return (
-   <Accordion
-     level="1"
-     isOpen={false}
-     toggle={noop}
-     header={
-      <Fragment>
-        <span className="header__title-text">{label}</span>
+    <Accordion
+      level="1"
+      isOpen={false}
+      toggle={noop}
+      title={label}
+      trailingActions={
         <InlineBtn
           icon={IconTypes.BTN_ADD}
           tooltip={`Create ${label}`}
           onClick={createNode}
         />
-      </Fragment>
       }>
     </Accordion>
   );
