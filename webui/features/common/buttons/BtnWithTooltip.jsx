@@ -22,6 +22,10 @@ import BtnConsoleIcon from './BtnConsole';
 import BtnConsoleConnectedIcon from './BtnConsoleConnected';
 import BtnConsoleDisconnectIcon from './BtnConsoleDisconnect';
 import BtnHideConsoleViewerIcon from './BtnHideConsoleViewer';
+import BtnChatIcon from './BtnChat';
+import BtnChatActiveIcon from './BtnChatActive';
+import BtnThinkingIcon from './BtnThinking';
+import BtnThinkingOffIcon from './BtnThinkingOff';
 
 const getBtnIcon = (type, size) => {
   switch (type) {
@@ -65,6 +69,14 @@ const getBtnIcon = (type, size) => {
       return <BtnConsoleDisconnectIcon size={size}/>;
     case IconTypes.BTN_HIDE_CONSOLE_VIEWER:
       return <BtnHideConsoleViewerIcon size={size}/>;
+    case IconTypes.BTN_CHAT:
+      return <BtnChatIcon size={size}/>;
+    case IconTypes.BTN_CHAT_ACTIVE:
+      return <BtnChatActiveIcon size={size}/>;
+    case IconTypes.BTN_THINKING:
+      return <BtnThinkingIcon size={size}/>;
+    case IconTypes.BTN_THINKING_OFF:
+      return <BtnThinkingOffIcon size={size}/>;
   }
 };
 

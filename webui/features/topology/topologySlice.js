@@ -11,7 +11,7 @@ export const getExpandedIcons = state => state.topology.expandedIcons;
 export const getVisibleUnderlays = state => state.topology.visibleUnderlays;
 export const getZoomedContainer = state => state.topology.zoomedContainer;
 export const getEditMode = state => state.topology.editMode;
-export const getConfigViewerVisible = state => state.topology.configViewerVisible;
+export const getRightSidebar = state => state.topology.rightSidebar || 'off';
 export const getConnectionInfoVisible = state =>
   state.topology.connectionInfoVisible;
 export const getIconSize = state => state.topology.iconSize;
@@ -28,6 +28,7 @@ const topologySlice = createSlice({
     dimensions: { width: 0, height: 0 },
     expandedIcons: [],
     visibleUnderlays: [],
+    rightSidebar: 'off',
     editMode: false,
     connectionInfoVisible: false,
     openTerminals: []
@@ -64,6 +65,12 @@ const topologySlice = createSlice({
     },
 
     iconExpandToggled: (state, { payload }) => {
+      if (state.rightSidebar === 'mcp') {
+        state.expandedIcons = state.expandedIcons.length === 1 &&
+          state.expandedIcons[0] === payload ? [] : [ payload ];
+        return;
+      }
+
       state.expandedIcons = state.expandedIcons.includes(payload)
         ? state.expandedIcons.filter(icon => icon !== payload)
         : [ payload, ...state.expandedIcons ];
@@ -86,8 +93,8 @@ const topologySlice = createSlice({
       state.bodyOverlayVisible = payload;
     },
 
-    configViewerToggled: (state, { payload }) => {
-      state.configViewerVisible = payload;
+    rightSidebarChanged: (state, { payload }) => {
+      state.rightSidebar = payload || 'off';
     },
 
     connectionInfoToggled: (state, { payload }) => {
@@ -129,7 +136,7 @@ export const {
   dimensionsChanged, itemDragged, iconHovered,
   connectionSelected, iconSelected, iconExpandToggled,
   underlayToggled, containerZoomToggled,
-  editModeToggled, configViewerToggled, connectionInfoToggled,
+  editModeToggled, rightSidebarChanged, connectionInfoToggled,
   iconSizeChanged, terminalToggled, hideConsoleViewer,
   highlightedIconsUpdated } = actions;
 export default reducer;

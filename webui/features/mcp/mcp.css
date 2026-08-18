@@ -1,0 +1,151 @@
+.mcp-viewer__activity {
+  border-top: 1px solid var(--divider);
+  color: var(--primary-text);
+  font-size: 0.8125rem;
+  min-width: 0;
+  padding: 0.75rem 0;
+}
+
+.mcp-viewer__activity:first-child {
+  border-top: 0;
+}
+
+.mcp-viewer__error {
+  color: var(--theme-danger);
+}
+
+.mcp-viewer__activity-title {
+  color: var(--theme-base);
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+
+.mcp-viewer__activity-cursor::after {
+  animation: mcp-viewer-cursor 800ms steps(1) infinite;
+  content: "-";
+  display: inline-block;
+  margin-left: 0.5ch;
+  width: 1ch;
+}
+
+@keyframes mcp-viewer-cursor {
+  0% {
+    content: "-";
+  }
+
+  25% {
+    content: "\\";
+  }
+
+  50% {
+    content: "|";
+  }
+
+  75% {
+    content: "/";
+  }
+}
+
+.mcp-viewer__activity-header {
+  align-items: baseline;
+  background: transparent;
+  border: 0;
+  cursor: default;
+  display: flex;
+  font: inherit;
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.mcp-viewer__activity-header--collapsed {
+  white-space: nowrap;
+}
+
+.mcp-viewer__text {
+  line-height: 1.4;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  -webkit-user-select: text;
+}
+
+.mcp-viewer__activity-header > .mcp-viewer__text {
+  flex: 1 1 auto;
+  margin-left: 0.5rem;
+}
+
+.mcp-viewer__label + .mcp-viewer__text,
+.mcp-viewer__activity-header + .mcp-viewer__text {
+  padding-top: 0.5rem;
+}
+
+.mcp-viewer__activity-header--collapsed > .mcp-viewer__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mcp-viewer__text--tail {
+  direction: rtl;
+  text-align: left;
+}
+
+.mcp-viewer__label {
+  color: var(--theme-alt-bold);
+  font-weight: 700;
+  padding-top: 0.5rem;
+}
+
+.mcp-viewer__suggested-message {
+  appearance: none;
+  background: var(--component-background);
+  border: 1px solid var(--divider);
+  border-radius: 0.35rem;
+  color: inherit;
+  cursor: pointer;
+  display: block;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  margin-bottom: 0.5rem;
+  max-width: min(100%, 48rem);
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  width: fit-content;
+}
+
+.mcp-viewer__suggested-message:hover {
+  background: var(--theme-base-hover);
+}
+
+.mcp-viewer__suggested-message +
+  .mcp-viewer__activity:not(.mcp-viewer__suggested-message) {
+  margin-top: 1rem;
+}
+
+.mcp-viewer__input {
+  background: transparent;
+  border: 0;
+  color: var(--primary-text);
+  cursor: text;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.mcp-viewer__input::placeholder {
+  color: var(--secondary-text);
+  opacity: 0.65;
+}

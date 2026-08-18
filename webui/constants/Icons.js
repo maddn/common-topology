@@ -33,6 +33,10 @@ export const BTN_CONSOLE = 'btn-conosle';
 export const BTN_CONSOLE_CONNECTED = 'btn-console-connected';
 export const BTN_CONSOLE_DISCONNECT = 'btn-console-disconnect';
 export const BTN_HIDE_CONSOLE_VIEWER = 'btn-hide-console-viewer';
+export const BTN_CHAT = 'btn-chat';
+export const BTN_CHAT_ACTIVE = 'btn-chat-active';
+export const BTN_THINKING = 'btn-thinking';
+export const BTN_THINKING_OFF = 'btn-thinking-off';
 
 // Other
 export const LABEL_FONT = '0.875em Inter';

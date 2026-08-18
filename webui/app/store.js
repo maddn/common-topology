@@ -4,6 +4,8 @@ import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER,
 import storage from 'redux-persist/lib/storage';
 
 import { jsonRpcApi } from 'api';
+import { mcpApi } from 'api/mcp';
+import mcpReducer from 'features/mcp/mcpSlice';
 import topologyReducer from 'features/topology/topologySlice';
 import menuReducer from 'features/menu/menuSlice';
 import nsoReducer from 'features/nso/nsoSlice';
@@ -15,8 +17,8 @@ const topologyPersistConfig = {
     'zoomedContainer',
     'expandedIcons',
     'visibleUnderlays',
-    'configViewerVisible',
-    'iconSize'
+    'iconSize',
+    'rightSidebar'
   ]
 };
 
@@ -29,9 +31,11 @@ const menuPersistConfig = {
 export const store = configureStore({
   reducer: {
     nso: nsoReducer,
+    mcp: mcpReducer,
     topology: persistReducer(topologyPersistConfig, topologyReducer),
     menu: persistReducer(menuPersistConfig, menuReducer),
-    [jsonRpcApi.reducerPath]: jsonRpcApi.reducer
+    [jsonRpcApi.reducerPath]: jsonRpcApi.reducer,
+    [mcpApi.reducerPath]: mcpApi.reducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: {
@@ -39,5 +43,5 @@ export const store = configureStore({
         FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
     },
     immutableCheck: false
-  }).concat(jsonRpcApi.middleware)
+  }).concat(jsonRpcApi.middleware, mcpApi.middleware)
 });

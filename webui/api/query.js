@@ -84,6 +84,8 @@ export function createItemsSelectorWithArray(keyValues) {
 }
 
 export function createItemsSelector(key, value, sortKey) {
+  const valueSet = Array.isArray(value) && new Set(value);
+
   return createSelector(
     res => res.data,
     res => res.isFetching,
@@ -92,8 +94,8 @@ export function createItemsSelector(key, value, sortKey) {
     (raw, isFetching, isSuccess, isError) => {
       const data = raw?.reduce((accumulator, item) => {
         const { [key]: itemKey, ...data } = item;
-        if (itemKey === value) {
-          accumulator.push(data);
+        if (valueSet ? valueSet.has(itemKey) : itemKey === value) {
+          accumulator.push(valueSet ? item : data);
         }
         return accumulator;
       }, []);

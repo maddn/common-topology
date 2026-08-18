@@ -315,7 +315,7 @@ class Config extends PureComponent {
           <ConfigHeaderActions device={device} managed={managed}/>
         </Fragment>}>
         {managed && <Fragment>
-          <div className="config-viewer__btn-row">
+          <div className="action-row">
             {this.btn('cli', 'cli', 'Format configuration as Cisco-style CLI')}
             {this.btn('cb', 'curly-braces',
               'Format configuration as Juniper-style curly braces')}

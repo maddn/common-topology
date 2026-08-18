@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 
 import { usePlatformsQuery, useDevicesQuery } from 'features/topology/Icon';
 import { getExpandedIcons,
-         getConfigViewerVisible } from 'features/topology/topologySlice';
+         getRightSidebar } from 'features/topology/topologySlice';
 import { getOpenTopology,
          getOpenServiceReferences } from 'features/menu/menuSlice';
 
-import Sidebar from 'features/common/Sidebar';
+import SidebarPane from 'features/common/SidebarPane';
 import SidebarSection from 'features/common/SidebarSection';
 
 import Config from './Config';
@@ -24,7 +24,7 @@ function ConfigViewer({
     getDeviceEditorKeypath = getNsoDeviceEditorKeypath }) {
   console.debug('Config Viewer Render');
   const expandedIcons = useSelector((state) => getExpandedIcons(state));
-  const configViewerVisible = useSelector((state) => getConfigViewerVisible(state));
+  const hidden = useSelector((state) => getRightSidebar(state) !== 'config');
   const openTopology = useSelector((state) => getOpenTopology(state));
   const serviceReferences = useSelector((state) =>
     getOpenServiceReferences(state));
@@ -32,9 +32,8 @@ function ConfigViewer({
   const devices = useDevicesQuery().data;
 
   return (
-    <Sidebar
-      right={true}
-      hidden={!configViewerVisible}
+    <SidebarPane
+      hidden={hidden}
       footer={<OutOfBandPolicies />}
     >
       <SidebarSection title="Config Viewer">
@@ -55,7 +54,7 @@ function ConfigViewer({
               ConfigHeaderActions={ConfigHeaderActions}/>;
           })}
       </SidebarSection>
-    </Sidebar>
+    </SidebarPane>
   );
 }
 

@@ -23,6 +23,7 @@ const InlineBtn = forwardRef(
           }
         )}
         ref={ref}
+        disabled={disabled}
         onClick={onClick}
         type={icon === BTN_CONFIRM ? 'submit' : 'button'}
       >

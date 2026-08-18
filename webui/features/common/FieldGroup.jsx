@@ -2,7 +2,7 @@ import React from 'react';
 import { memo, Fragment } from 'react';
 
 
-const FieldGroup = memo(function Section({ title, ...rest }) {
+const FieldGroup = memo(function FieldGroup({ title, ...rest }) {
   console.debug('FieldGroup Render');
 
   return (
@@ -14,8 +14,8 @@ const FieldGroup = memo(function Section({ title, ...rest }) {
         {rest && Object.keys(rest).map(key =>
           <div key={key} className="field-group__row">
             <span className="field-group__label">{key}</span>
-            <span className="field-group__value-wrapper">
-              <span className="field-group__value-text">{rest[key]}</span>
+            <span className="field-group__value">
+              <span className="field-group__value-rtl-inner">{rest[key]}</span>
             </span>
           </div>
         )}

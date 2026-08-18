@@ -2,6 +2,7 @@ import { COMMIT_MANAGER_URL, LOGIN_URL } from '../constants/Layout';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { writeTransactionToggled, commitInProgressToggled,
          getCommitInProgress, handleError } from '../features/nso/nsoSlice';
+import { mcpApi } from './mcp';
 
 
 export function findWriteTransaction(transactions, actionPath) {
@@ -232,6 +233,7 @@ export const jsonRpcApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         dispatch(commitInProgressToggled(true));
         await queryFulfilled;
+        dispatch(mcpApi.util.invalidateTags([ 'capabilities' ]));
         dispatch(writeTransactionToggled(false));
         dispatch(commitInProgressToggled(false));
       },
