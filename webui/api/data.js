@@ -51,6 +51,31 @@ export const dataApi = jsonRpcApi.injectEndpoints({
       }
     }),
 
+    renameListEntry: build.mutation({
+      query: ({ fromPath, toKeys }) => ({
+        method: 'rename_list_entry',
+        params: {
+          from_path: fromPath,
+          to_keys: toKeys.map(([, value ]) => value)
+        }
+      }),
+      invalidatesTags: [ 'changes' ],
+      async onQueryStarted(
+        { fromPath, toKeys, queryKey }, { dispatch, queryFulfilled }
+      ) {
+        await queryFulfilled;
+        const toPath = fromPath.replace(
+          /\{[^}]+}$/,
+          `{${toKeys.map(([, value ]) => value).join(' ')}}`
+        );
+        toKeys.forEach(([ leaf, value ]) => {
+          dispatch(updateQueryData(fromPath, leaf, value, queryKey, dispatch));
+        });
+        dispatch(updateQueryData(
+          fromPath, 'keypath', toPath, queryKey, dispatch));
+      }
+    }),
+
     deletePath: build.mutation({
       query: ({ keypath }) => ({
         method: 'delete',
@@ -90,6 +115,6 @@ export const dataApi = jsonRpcApi.injectEndpoints({
 export const {
   endpoints: { action, create, setValue },
   useGetValueQuery, useSetValueMutation,
-  useCreateMutation, useDeletePathMutation,
+  useCreateMutation, useRenameListEntryMutation, useDeletePathMutation,
   useActionMutation
 } = dataApi;

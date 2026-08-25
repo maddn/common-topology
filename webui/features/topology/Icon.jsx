@@ -32,7 +32,7 @@ import { camelCase, selectItem, selectItemWithArray,
          createItemsSelector, useQueryQuery } from '/api/query';
 
 import { useSetValueMutation,
-         useCreateMutation, useDeletePathMutation } from '/api/data';
+         useCreateMutation, useRenameListEntryMutation } from '/api/data';
 import { useQuerySelection } from './QuerySelectionContext';
 
 
@@ -251,7 +251,7 @@ function Icon({ name, getDeviceStatus }) {
   const dispatch = useDispatch();
   const [ setValue ] = useSetValueMutation();
   const [ create ] = useCreateMutation();
-  const [ deletePath ] = useDeletePathMutation();
+  const [ renameListEntry ] = useRenameListEntryMutation();
 
   const { iconSize: size, pxToPc } = useContext(LayoutContext);
 
@@ -313,15 +313,22 @@ function Icon({ name, getDeviceStatus }) {
       const zEndDevice = (zEnd || !aEnd) ? name : fromDevice;
 
       if (keypath) {
-        deletePath({ keypath });
+        renameListEntry({
+          fromPath: keypath,
+          toKeys: [
+            [ 'a-end-device', aEndDevice ],
+            [ 'z-end-device', zEndDevice ]
+          ]
+        });
+      } else {
+        create({
+          keypath: `${openTopologyKeypath}/links/link`,
+          name: `${aEndDevice} ${zEndDevice}`,
+          aEndDevice, zEndDevice,
+          parentName: openTopology,
+        });
       }
 
-      create({
-        keypath: `${openTopologyKeypath}/links/link`,
-        name: `${aEndDevice} ${zEndDevice}`,
-        aEndDevice, zEndDevice,
-        parentName: openTopology,
-      });
       dispatch(connectionSelected({ aEndDevice, zEndDevice }));
     },
     canDrop: (item, monitor) => {

@@ -25,6 +25,7 @@ const getJsonRpcBaseQuery = () => {
   const getTransType = method =>
     [ 'create',
       'delete',
+      'rename_list_entry',
       'set_value',
       'get_trans_changes',
       'delete_trans',
@@ -99,9 +100,14 @@ const getJsonRpcBaseQuery = () => {
     const comet = { comet_id: await getComet(method, api.dispatch) };
 
     const transType = getTransType(method);
+    const allowNewTransaction = [
+      'create',
+      'delete',
+      'rename_list_entry',
+      'set_value'
+    ].includes(method);
     const th = await getTransaction(
-      transType, actionPath, api.dispatch, api,
-      [ 'create', 'delete', 'set_value' ].includes(method)
+      transType, actionPath, api.dispatch, api, allowNewTransaction
     );
 
     if (transType && !th) {
