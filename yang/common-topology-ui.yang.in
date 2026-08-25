@@ -7,6 +7,9 @@ submodule common-topology-ui {
   import tailf-common {
     prefix tailf;
   }
+  import ietf-inet-types {
+    prefix inet;
+  }
 
   typedef icon-type {
     type enumeration {
@@ -39,6 +42,50 @@ submodule common-topology-ui {
       enum json;
       enum xml;
       enum yaml;
+    }
+  }
+
+  grouping assistant-settings-grouping {
+    container assistant {
+      tailf:info "Topology UI assistant settings";
+
+      leaf ollama-base-url {
+        tailf:info "Ollama API base URL";
+        type union {
+          type enumeration {
+            enum "http://127.0.0.1:11434";
+            enum "http://host.docker.internal:11434";
+          }
+          type inet:uri;
+        }
+        default "http://127.0.0.1:11434";
+      }
+
+      leaf model {
+        tailf:info "Ollama model name";
+        type union {
+          type enumeration {
+            enum "llama3.2:3b";
+            enum "qwen3:4b";
+            enum "lfm2.5:8b";
+          }
+          type string;
+        }
+        default "qwen3:4b";
+      }
+
+      leaf num-thread {
+        tailf:info "Ollama num_thread option";
+        type uint16 {
+          range "1..max";
+        }
+      }
+
+      leaf debug {
+        tailf:info "Enable assistant debug logging";
+        type boolean;
+        default true;
+      }
     }
   }
 
