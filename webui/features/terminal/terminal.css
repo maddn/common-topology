@@ -40,5 +40,10 @@
 }
 
 .terminal__text {
+  cursor: text;
   margin: 0;
+  user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  -webkit-user-select: text;
 }

@@ -11,6 +11,9 @@ const BACKSPACE = 8;
 const NL = 10;
 const CR = 13;
 
+const normalizePastedText = text =>
+  text.replace(/\r\n/g, '\r').replace(/\n/g, '\r');
+
 function Terminal({
   ip, port, username, password, active, history: initialHistory, onClose
 }) {
@@ -116,6 +119,11 @@ function Terminal({
     sendMessage(buffer);
   };
 
+  const sendText = useCallback((text) => {
+    const buffer = new TextEncoder().encode(normalizePastedText(text));
+    sendMessage(buffer.buffer);
+  }, [ sendMessage ]);
+
   const sendEscapeSequence = (keyCode) => {
     const buffer = new ArrayBuffer(3);
     const bufferView = new Uint8Array(buffer);
@@ -126,6 +134,18 @@ function Terminal({
   };
 
   const handleKeyDown = useCallback((event) => {
+    if (event.key == 'Meta') {
+      return;
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() == 'v') {
+      return;
+    }
+
+    if (event.metaKey && event.key.toLowerCase() == 'c') {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     if (['Backspace', 'Enter', 'Space', 'Tab'].includes(event.key)) {
@@ -164,6 +184,15 @@ function Terminal({
     }
   }, []);
 
+  const handlePaste = useCallback((event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const text = event.clipboardData?.getData('text/plain');
+    if (text) {
+      sendText(text);
+    }
+  }, [ sendText ]);
+
   return (
     <div
       className={classNames('terminal', {
@@ -171,6 +200,7 @@ function Terminal({
       })}
       ref={wrapperRef}
       onKeyDown={handleKeyDown}
+      onPaste={handlePaste}
       tabIndex="0"
     >
       <pre
