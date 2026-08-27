@@ -1,12 +1,11 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { memo, useState } from 'react';
 
-import { useCreateMutation, useGetValueQuery,
-         useSetValueMutation } from 'api/data';
-import { useMemoizeWhenFetched, useQueryQuery, swapLabels } from 'api/query';
+import { useGetValueQuery } from 'api/data';
+import { useDeleteJsonConfig, useLoadJsonConfig } from 'api/loadJsonConfig';
+import { fetchStatus, useMemoizeWhenFetched, useQueryState } from 'api/query';
 import { BTN_RESTART } from 'constants/Icons';
-import { handleError } from 'features/nso/nsoSlice';
 
+import DroppableNodeList from 'features/menu/panels/DroppableNodeList';
 import InlineBtn from 'features/common/buttons/InlineBtn';
 import NodePane from 'features/menu/panels/NodePane';
 import NodeListWrapper from 'features/menu/panels/NodeListWrapper';
@@ -17,153 +16,61 @@ const path = '/mcp-server/policies';
 
 const rulePath = `${path}/rule`;
 
-const selection = {
-  'default-action': 'Default Action'
-};
-
-const ruleSelection = [
-  'sequence', 'action', 'match/namespace', 'match/path', 'description'
-];
-
-const ruleLabels = {
+const ruleSelection = {
   'action':          'Action',
   'match/namespace': 'Match Namespace',
   'match/path':      'Match Path',
   'description':     'Description'
 };
 
-const PolicyButton = memo(function PolicyButton({
-  title, running, rules, onRun
-}) {
-  console.debug('PolicyButton Render');
-
-  const run = event => {
-    event.stopPropagation();
-    onRun(rules);
-  };
-
-  return (
-    <InlineBtn
-      icon={BTN_RESTART}
-      label={running ? `${title}...` : title}
-      tooltip={title}
-      disabled={Boolean(running)}
-      align="left"
-      onClick={run}
-    />
-  );
-});
-
-const PolicyRule = memo(function PolicyRule({ rule, openRule, toggled }) {
-  console.debug('PolicyRule Render');
-
-  const sequence = rule.name;
-  const match = rule.matchNamespace || rule.matchPath;
-
-  return (
-    <NodePane
-      level={2}
-      title={`${sequence} ${rule.action}${match ? ` [${match}]` : ''}`}
-      label="MCP Policy Rule"
-      keypath={rule.keypath}
-      isOpen={openRule === rule.keypath}
-      fade={!!openRule}
-      nodeToggled={toggled}
-      { ...swapLabels(rule, ruleLabels) }
-    />
-  );
-});
-
+const policyRuleTitle = ({ name, action, matchNamespace, matchPath }) => {
+  const match = matchNamespace || matchPath;
+  return `${name} ${action}${match ? ` [${match}]` : ''}`;
+};
 
 const Policy = memo(function Policy({ policyRules = [] }) {
   console.debug('Policy Render');
 
-  const dispatch = useDispatch();
-  const [ create ] = useCreateMutation();
-  const [ setValue ] = useSetValueMutation();
-  const [ policyRunning, setPolicyRunning ] = useState(false);
+  const deleteJsonConfig = useDeleteJsonConfig();
+  const loadJsonConfig = useLoadJsonConfig();
+
+  const [ policyLoading, setPolicyLoading ] = useState(false);
   const [ isOpen, setOpen ] = useState(false);
-  const [ openRule, setOpenRule ] = useState(null);
-  const {
-    data: defaultAction,
-    isFetching: actionFetching,
-    isSuccess: actionSuccess,
-    isError: actionError
-  } = useGetValueQuery({ keypath: `${path}/default-action` });
-  const rulesQuery = useQueryQuery({
-    xpathExpr: rulePath,
-    selection: ruleSelection
+
+  const { data: defaultAction, ...actionQuery } = useGetValueQuery({
+    keypath: `${path}/default-action`
   });
-  const rules = rulesQuery.data || [];
+
   const fetching = useMemoizeWhenFetched({
-    defaultAction: actionFetching ? '' :
-      actionSuccess ? 'OK' : actionError ? 'Error' : 'OK',
-    rules: rulesQuery.isFetching ? '' :
-      rulesQuery.isSuccess ? 'OK' : rulesQuery.isError ? 'Error' : 'OK'
+    'Default Action': fetchStatus(actionQuery),
+    'Policy Rules': useQueryState(rulePath)
   });
-  const toggled = useCallback(keypath =>
-    setOpenRule(openRule => openRule === keypath ? null : keypath), []);
-  const ruleItems = useMemo(() =>
-    rules.map(rule =>
-      <PolicyRule
-        key={rule.keypath}
-        rule={rule}
-        openRule={openRule}
-        toggled={toggled}
-      />),
-    [ openRule, rules, toggled ]);
 
-  const runMutation = async promise => {
-    const result = await promise;
-    if (result.error) {
-      throw new Error(result.error.message || JSON.stringify(result.error));
-    }
-    return result;
-  };
-
-  const createDemoPolicyRules = async (rules = []) => {
-    const existingRules = rules.map(rule => String(rule.name));
-    for (const { sequence, namespace, description } of policyRules) {
-      const keypath = `${rulePath}{${sequence}}`;
-      if (!existingRules.includes(String(sequence))) {
-        await runMutation(create({
-          keypath: rulePath,
-          name: sequence
-        }));
-      }
-
-      await runMutation(setValue({
-        keypath,
-        leaf: 'action',
-        value: 'permit'
-      }));
-      await runMutation(setValue({
-        keypath,
-        leaf: 'match/namespace',
-        value: namespace
-      }));
-      await runMutation(setValue({
-        keypath,
-        leaf: 'description',
-        value: description
-      }));
+  const policyConfig = {
+    [path]: {
+      'rule': policyRules.map(({ sequence, namespace, description }) => ({
+        'name': sequence,
+        'action': 'permit',
+        'match/namespace': namespace,
+        'description': description
+      }))
     }
   };
 
-  const resetDemoPolicyRules = async rules => {
-    setPolicyRunning(true);
+  const resetRules = async () => {
+    setPolicyLoading(true);
     try {
-      await createDemoPolicyRules(rules);
-    } catch (error) {
-      dispatch(handleError('Failed to reset MCP policy rules', error));
+      await deleteJsonConfig([ policyConfig ]);
+      await loadJsonConfig(policyConfig);
     } finally {
-      setPolicyRunning(false);
+      setPolicyLoading(false);
     }
   };
 
   return (
     <NodeListWrapper
       title="MCP Server"
+      fetching={fetching}
       disableCreate={true}
     >
       <NodePane
@@ -175,25 +82,30 @@ const Policy = memo(function Policy({ policyRules = [] }) {
         disableDelete={true}
         subHeader={policyRules.length > 0 &&
           <div className="action-row">
-            <PolicyButton
-              title="Reset Demo Rules"
-              running={policyRunning}
-              rules={rules}
-              onRun={resetDemoPolicyRules}
+            <InlineBtn
+              icon={BTN_RESTART}
+              label="Reset Rules"
+              tooltip="Reset Rules"
+              disabled={Boolean(policyLoading)}
+              align="left"
+              onClick={event => {
+                event.stopPropagation();
+                resetRules();
+              }}
             />
           </div>
         }
-        { ...swapLabels({
-          defaultAction
-        }, selection) }
+        { ...{ 'Default Action': defaultAction } }
       >
-        <NodeListWrapper
-          title="Policy Rules"
-          fetching={fetching}
+        <DroppableNodeList
+          label="Policy Rule"
+          keypath={rulePath}
+          baseSelect={[ 'sequence' ]}
+          labelSelect={ruleSelection}
+          getTitle={policyRuleTitle}
+          allowDrop={false}
           disableCreate={true}
-        >
-          {ruleItems}
-        </NodeListWrapper>
+        />
       </NodePane>
     </NodeListWrapper>
   );

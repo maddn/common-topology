@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 
-import { useMemoizeWhenFetched, useQueryQuery, fetchStatus,
+import { useMemoizeWhenFetched, useQueryQuery, fetchStatus, useQueryState,
          createItemsSelector } from 'api/query';
 
 import DroppableNodeList from 'features/menu/panels/DroppableNodeList';
@@ -10,6 +10,8 @@ import NodePane from 'features/menu/panels/NodePane';
 
 export const label = 'Brownfield Protection';
 export const path = '/services/out-of-band/policy';
+
+const rulePath = `${path}/rule`;
 
 const policySelection = [
   'servicepoint'
@@ -25,7 +27,7 @@ const ruleSelection = {
   'at-value-set':   'At Value Set'
 };
 
-function OutOfBandPolicy({
+const OutOfBandPolicy = memo(function OutOfBandPolicy({
   policy, openPolicy, toggledPolicy
 }) {
   console.debug('OutOfBandPolicy Render');
@@ -58,9 +60,9 @@ function OutOfBandPolicy({
       />
     </NodePane>
   );
-}
+});
 
-function OutOfBandPolicies() {
+const OutOfBandPolicies = memo(function OutOfBandPolicies() {
   console.debug('OutOfBandPolicies Render');
 
   const [ openPolicy, setOpenPolicy ] = useState(null);
@@ -69,7 +71,8 @@ function OutOfBandPolicies() {
     selection: policySelection
   });
   const fetching = useMemoizeWhenFetched({
-    'OOB Policies': fetchStatus(policiesQuery)
+    'OOB Policies': fetchStatus(policiesQuery),
+    'OOB Policy Rules': useQueryState(rulePath)
   });
 
   const toggledPolicy = useCallback(keypath => {
@@ -93,6 +96,6 @@ function OutOfBandPolicies() {
         />)}
     </NodeListWrapper>
   );
-}
+});
 
-export default memo(OutOfBandPolicies);
+export default OutOfBandPolicies;

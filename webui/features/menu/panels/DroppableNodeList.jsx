@@ -29,7 +29,7 @@ function DroppableNodeList({
   dropBehaviour = DROP_BEHAVIOUR_CREATE_ONLY,
   calculateName, newItemDefaults,
   newItemDragType, defaultsPath, newItemDragIcon,
-  disableCreate, disableGoTo,
+  getTitle, disableCreate, disableGoTo,
   ...rest
 }) {
   console.debug('DrobbableNodeList Render');
@@ -91,7 +91,7 @@ function DroppableNodeList({
      >
         {data?.map(({ name, keypath, ...item }) =>
           <NodePane
-            title={name}
+            title={String(getTitle ? getTitle({ name, ...item }) : name)}
             key={name}
             keypath={keypath}
             label={label}

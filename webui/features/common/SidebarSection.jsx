@@ -3,7 +3,7 @@ import LoadingOverlay from './LoadingOverlay';
 
 
 const SidebarSection = memo(function SidebarSection({
-  title, headerExtra, fetching, children
+  title, headerActions, fetching, children
 }) {
   console.debug('SidebarSection Render');
 
@@ -12,7 +12,7 @@ const SidebarSection = memo(function SidebarSection({
       {title &&
         <div className="header">
           <span className="header__title-text">{title}</span>
-          {headerExtra}
+          {headerActions}
         </div>}
       <div className="accordion__group">
         {fetching && <LoadingOverlay items={fetching}/>}

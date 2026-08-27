@@ -22,7 +22,7 @@ import { isFetching } from 'api/query';
 
 const NodeListWrapper = forwardRef(function NodeListWrapper({
   title, label, keypath, level, fetching, disableCreate, newItemDefaults,
-  newItemDragType, newItemDragIcon, defaultsPath,
+  newItemDragType, newItemDragIcon, defaultsPath, headerActions,
   children
 }, ref) {
   console.debug('NodeListWrapper Render');
@@ -110,6 +110,7 @@ const NodeListWrapper = forwardRef(function NodeListWrapper({
               />
             </Fragment>
           }
+          {headerActions}
         </div>
       }
       <div

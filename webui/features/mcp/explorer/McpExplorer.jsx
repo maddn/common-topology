@@ -142,7 +142,7 @@ const McpExplorer = memo(function McpExplorer({
       <SidebarSection
         title="MCP Explorer"
         fetching={fetching}
-        headerExtra={
+        headerActions={
           <Fragment>
             <InlineBtn
               icon={hasViewer ? BTN_CHAT_ACTIVE : BTN_CHAT}

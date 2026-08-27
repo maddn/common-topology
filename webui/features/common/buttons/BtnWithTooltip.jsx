@@ -17,6 +17,8 @@ import BtnUndefineIcon from './BtnUndefine';
 import BtnStartIcon from './BtnStart';
 import BtnRestartIcon from './BtnRestart';
 import BtnResetIcon from './BtnReset';
+import BtnEyeOpenIcon from './BtnEyeOpen';
+import BtnEyeClosedIcon from './BtnEyeClosed';
 import BtnStopIcon from './BtnStop';
 import BtnConsoleIcon from './BtnConsole';
 import BtnConsoleConnectedIcon from './BtnConsoleConnected';
@@ -59,6 +61,10 @@ const getBtnIcon = (type, size) => {
       return <BtnRestartIcon size={size}/>;
     case IconTypes.BTN_RESET:
       return <BtnResetIcon size={size}/>;
+    case IconTypes.BTN_EYE_OPEN:
+      return <BtnEyeOpenIcon size={size}/>;
+    case IconTypes.BTN_EYE_CLOSED:
+      return <BtnEyeClosedIcon size={size}/>;
     case IconTypes.BTN_STOP:
       return <BtnStopIcon size={size}/>;
     case IconTypes.BTN_CONSOLE:
