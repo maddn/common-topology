@@ -23,7 +23,7 @@ submodule common-topology {
       container devices;
 
       container links {
-        description "Point to point links between devices in the toplogy.";
+        description "Point to point links between devices in the topology.";
 
         list link {
           key "a-end-device z-end-device";

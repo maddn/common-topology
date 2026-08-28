@@ -39,6 +39,9 @@ export const swapLabels = (data, labels) => {
   }, {});
 };
 
+// Queries often select a local list key plus one or two ancestor list names.
+// YANG normally nests lists through containers, so distinguishing ../name from
+// ../../../name is enough for the current topology queries.
 export const convertKeys = (data, replaceName) =>
   Object.fromEntries(Object.entries(data).map(
     ([ key, value ], index) => [

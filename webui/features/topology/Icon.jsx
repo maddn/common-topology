@@ -228,6 +228,8 @@ export function useIconPositionCalculator() {
       return {};
     }
 
+    // A device can have coordinates inside a zoomed layout container. When the
+    // active zoom has no per-container coordinates, fall back to the base icon.
     const zoomedIcon = zoomedIcons?.find(({ deviceName, name }) =>
       deviceName === device.name && name === zoomedContainer);
     const container = zoomedIcon?.name || device.container;

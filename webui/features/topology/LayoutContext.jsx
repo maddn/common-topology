@@ -82,6 +82,9 @@ const calculateLayout = (
   let x = -iconWidthPc / 2;
   return basicLayout.reduce((accumulator,
     { name, title, connectionColour, width }, index) => {
+    // Expand alternating background bands by sharing one icon-width of space
+    // across neighbouring containers. Edge containers only share one border,
+    // so they apply half of the internal-container adjustment.
     const offset = backgroundOffsetPc / ((
       index === 0 || index === (basicLayout.length - 1)) ? 4 : 2);
     const zoomed = zoomedContainerName === name;
@@ -147,6 +150,8 @@ export const LayoutContextProvider = React.memo(function Context({ children }) {
     const iconHeightPc = height > width ? iconSize*width/height : iconSize;
     const iconWidthPc = width > height ? iconSize*height/width : iconSize;
 
+    // The YANG value names the background bands that expand. Visually this
+    // makes icons in the adjacent numbered containers overlap those bands.
     const backgroundOffsetPc = 0 +
       (backgroundOffset === 'odd' ? iconWidthPc : 0) -
       (backgroundOffset === 'even' ? iconWidthPc : 0);
