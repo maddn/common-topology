@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER,
          persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -28,15 +28,17 @@ const menuPersistConfig = {
   whitelist: [ 'openTopology', 'openContext', 'openService' ]
 };
 
+export const rootReducer = combineReducers({
+  nso: nsoReducer,
+  mcp: mcpReducer,
+  topology: persistReducer(topologyPersistConfig, topologyReducer),
+  menu: persistReducer(menuPersistConfig, menuReducer),
+  [jsonRpcApi.reducerPath]: jsonRpcApi.reducer,
+  [mcpApi.reducerPath]: mcpApi.reducer
+});
+
 export const store = configureStore({
-  reducer: {
-    nso: nsoReducer,
-    mcp: mcpReducer,
-    topology: persistReducer(topologyPersistConfig, topologyReducer),
-    menu: persistReducer(menuPersistConfig, menuReducer),
-    [jsonRpcApi.reducerPath]: jsonRpcApi.reducer,
-    [mcpApi.reducerPath]: mcpApi.reducer
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: ['item-dragged',
