@@ -24,12 +24,12 @@ const parseStreamChunk = (buffer, onEvent) => {
 };
 
 export const assistantStream = async ({
-  message, context, think, onEvent
+  message, context, think, includeResource, onEvent
 }) => {
   const response = await fetch(assistantUrl('chat-stream'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message, context, think })
+    body: JSON.stringify({ message, context, think, includeResource })
   });
 
   if (!response.ok || !response.body) {

@@ -259,12 +259,36 @@ const formatMcpResourceResult = result => {
   return truncateJson(removePrivateNodes(result));
 };
 
-const attachSelectedServiceResource = async ({
+const mcpResourceMessages = ({ uri, text, error }) => [
+  {
+    role: 'assistant',
+    content: '',
+    tool_calls: [
+      {
+        id: 'mcp_resource_context_0',
+        function: {
+          index: 0,
+          name: 'mcp_resource_read',
+          arguments: {
+            uri
+          }
+        }
+      }
+    ]
+  },
+  {
+    role: 'tool',
+    tool_name: 'mcp_resource_read',
+    content: error || text || ''
+  }
+];
+
+const selectedServiceResourceMessages = async ({
   config, requestId, context, onEvent
 }) => {
   const selectedService = context?.selectedService;
   if (!selectedService?.uri) {
-    return context;
+    return [];
   }
 
   const { label, uri } = selectedService;
@@ -294,7 +318,7 @@ const attachSelectedServiceResource = async ({
 
     log({
       requestId,
-      event: 'mcp_resource_attached',
+      event: 'mcp_resource_read',
       details: {
         label,
         uri,
@@ -302,13 +326,7 @@ const attachSelectedServiceResource = async ({
       }
     });
 
-    return {
-      ...context,
-      selectedService: {
-        ...selectedService,
-        text: resourceText
-      }
-    };
+    return mcpResourceMessages({ uri, text: resourceText });
   } catch (error) {
     onEvent?.({
       ...resourceRequest,
@@ -317,7 +335,7 @@ const attachSelectedServiceResource = async ({
     });
     log({
       requestId,
-      event: 'mcp_resource_attach_error',
+      event: 'mcp_resource_read_error',
       details: {
         label,
         uri,
@@ -328,13 +346,7 @@ const attachSelectedServiceResource = async ({
       console.error(error);
     }
 
-    return {
-      ...context,
-      selectedService: {
-        ...selectedService,
-        error: error.message
-      }
-    };
+    return mcpResourceMessages({ uri, error: error.message });
   }
 };
 
@@ -624,37 +636,13 @@ const fillPromptTemplate = (template, values) =>
     template
   ).replace(/\n{3,}/g, '\n\n').trim();
 
-const selectedServiceDescription = resource =>
-  `Selected ${resource.label} service configuration resource.`;
-
-const primaryMcpResourceSection = resource =>
-  resource?.uri
-    ? promptSection('primary-mcp-resource', [
-      'Attached current MCP resource snapshot.',
-      '',
-      `Resource: ${resource.uri}`,
-      `Description: ${selectedServiceDescription(resource)}`,
-      resource.error
-        ? `Error: ${resource.error}`
-        : [
-          'Content:',
-          resource.text || ''
-        ].join('\n')
-    ].filter(Boolean))
-    : undefined;
-
 const currentUiSelectionSection = context => {
-  const selectedService = context?.selectedService;
-  const selectedDevice = context?.selectedDevice;
-
   return promptSection('current-ui-selection', [
-    selectedService?.name
-      ? `Selected ${selectedService.label} service: ${selectedService.name}`
-      : 'No service resource is selected.',
-    selectedDevice
-      ? `Selected device: ${selectedDevice}`
-      : undefined
-  ].filter(Boolean));
+    JSON.stringify({
+      selectedService: context?.selectedService || null,
+      selectedDevice: context?.selectedDevice || null
+    }, null, 2)
+  ]);
 };
 
 const writeOllamaDump = ({ config, requestId, round, kind, payload }) => {
@@ -962,7 +950,7 @@ const usageText = usage => {
 };
 
 const toolEnabledOllamaLoop = async ({
-  config, requestId, message, context, onEvent
+  config, requestId, message, context, resourceMessages = [], onEvent
 }) => {
   const toolsResult = await mcpRequest(config, 'tools/list');
   const advertisedToolNames = new Set(
@@ -995,12 +983,10 @@ const toolEnabledOllamaLoop = async ({
     {
       role: 'system',
       content: fillPromptTemplate(promptTemplate, {
-        CURRENT_UI_SELECTION: currentUiSelectionSection(context),
-        PRIMARY_MCP_RESOURCES: primaryMcpResourceSection(
-          context?.selectedService
-        )
+        CURRENT_UI_SELECTION: currentUiSelectionSection(context)
       })
     },
+    ...resourceMessages,
     {
       role: 'user',
       content: message
@@ -1153,7 +1139,8 @@ const handleAssistantRequest = async ({ config, body, onEvent }) => {
       details: {
         user: mcpConfig.nsoUsername,
         messageChars: message.length,
-        thinking: mcpConfig.ollamaThink
+        thinking: mcpConfig.ollamaThink,
+        includeResource: body?.includeResource !== false
       }
     });
     const assistantSettings = await readAssistantSettings(mcpConfig);
@@ -1182,18 +1169,21 @@ const handleAssistantRequest = async ({ config, body, onEvent }) => {
       }
     });
 
-    const context = await attachSelectedServiceResource({
-      config: effectiveConfig,
-      requestId,
-      context: body?.context,
-      onEvent
-    });
+    const resourceMessages = body?.includeResource === false
+      ? []
+      : await selectedServiceResourceMessages({
+        config: effectiveConfig,
+        requestId,
+        context: body?.context,
+        onEvent
+      });
 
     const response = await toolEnabledOllamaLoop({
       config: effectiveConfig,
       requestId,
       message,
-      context,
+      context: body?.context,
+      resourceMessages,
       onEvent
     });
 

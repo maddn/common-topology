@@ -19,6 +19,8 @@ import BtnRestartIcon from './BtnRestart';
 import BtnResetIcon from './BtnReset';
 import BtnEyeOpenIcon from './BtnEyeOpen';
 import BtnEyeClosedIcon from './BtnEyeClosed';
+import BtnResourceIcon from './BtnResource';
+import BtnResourceOmittedIcon from './BtnResourceOmitted';
 import BtnStopIcon from './BtnStop';
 import BtnConsoleIcon from './BtnConsole';
 import BtnConsoleConnectedIcon from './BtnConsoleConnected';
@@ -65,6 +67,10 @@ const getBtnIcon = (type, size) => {
       return <BtnEyeOpenIcon size={size}/>;
     case IconTypes.BTN_EYE_CLOSED:
       return <BtnEyeClosedIcon size={size}/>;
+    case IconTypes.BTN_RESOURCE:
+      return <BtnResourceIcon size={size}/>;
+    case IconTypes.BTN_RESOURCE_OMITTED:
+      return <BtnResourceOmittedIcon size={size}/>;
     case IconTypes.BTN_STOP:
       return <BtnStopIcon size={size}/>;
     case IconTypes.BTN_CONSOLE:

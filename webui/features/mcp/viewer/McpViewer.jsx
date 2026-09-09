@@ -162,34 +162,44 @@ const Timeline = memo(function Timeline({ items, streaming }) {
   return renderedItems;
 });
 
+const suggestedMessage = message =>
+  typeof message === 'string'
+    ? { text: message, includeResource: true }
+    : {
+      text: message.text,
+      includeResource: message.includeResource !== false
+    };
+
 const SuggestedMessages = memo(function SuggestedMessages({
   groups = [], onSelect
 }) {
   console.debug('SuggestedMessages Render');
 
-  const selectMessage = useCallback(event => {
-    onSelect(event.currentTarget.value);
-  }, [ onSelect ]);
   if (!groups.length) {
     return null;
   }
 
-  return groups.map(({ note, messages }) =>
-    <Fragment key={note || messages.join('|')}>
+  return groups.map(({ note, messages }, index) =>
+    <Fragment key={index}>
       {note &&
         <div className="mcp-viewer__activity">
           <span className="mcp-viewer__text">{note}</span>
         </div>}
-      {messages.map(message =>
-        <button
-          key={message}
-          type="button"
-          className="mcp-viewer__activity mcp-viewer__suggested-message"
-          value={message}
-          onClick={selectMessage}
-        >
-          <span className="mcp-viewer__text">{message}</span>
-        </button>)}
+      {messages.map(message => {
+        const selectedMessage = suggestedMessage(message);
+        return (
+          <button
+            key={selectedMessage.text}
+            type="button"
+            className="mcp-viewer__activity mcp-viewer__suggested-message"
+            onClick={() => onSelect(selectedMessage)}
+          >
+            <span className="mcp-viewer__text">
+              {selectedMessage.text}
+            </span>
+          </button>
+        );
+      })}
     </Fragment>
   );
 });
@@ -212,7 +222,7 @@ const McpViewer = memo(function McpViewer({
   const selectedDevice = useMcpDevice();
   const selectedService = useSelector(state => {
     for (const schema of serviceSchemas) {
-      if (!schema.attachToChat) {
+      if (!schema.includeInChat) {
         continue;
       }
 
@@ -227,6 +237,7 @@ const McpViewer = memo(function McpViewer({
     }
   }, shallowEqual);
   const [ input, setInput ] = useState('');
+  const [ includeResource, setIncludeResource ] = useState(true);
   const [ sending, setSending ] = useState(false);
   const transcriptRef = useRef();
   const inputRef = useRef();
@@ -288,6 +299,7 @@ const McpViewer = memo(function McpViewer({
           ...(selectedService ? { selectedService } : {})
         },
         think: thinkingEnabled,
+        includeResource,
         onEvent: appendStreamUpdate
       });
 
@@ -306,18 +318,21 @@ const McpViewer = memo(function McpViewer({
   };
 
   const selectSuggestedMessage = useCallback(message => {
-    setInput(message);
+    setInput(message.text);
+    setIncludeResource(message.includeResource);
     requestAnimationFrame(() => inputRef.current?.focus());
   }, []);
 
   const clearViewer = () => {
     setInput('');
+    setIncludeResource(true);
     dispatch(viewerCleared());
     dispatch(viewerHidden());
   };
 
   const clearSession = () => {
     setInput('');
+    setIncludeResource(true);
     dispatch(viewerCleared());
   };
 
@@ -345,6 +360,15 @@ const McpViewer = memo(function McpViewer({
             icon={IconTypes.BTN_GOTO}
             tooltip="View Assistant Settings in Configuration Editor"
             onClick={goToAssistantSettings}
+          />
+          <InlineBtn
+            icon={includeResource
+              ? IconTypes.BTN_RESOURCE
+              : IconTypes.BTN_RESOURCE_OMITTED}
+            tooltip={includeResource
+              ? 'Omit MCP Resource'
+              : 'Include MCP Resource'}
+            onClick={() => setIncludeResource(!includeResource)}
           />
           <InlineBtn
             icon={thinkingEnabled
