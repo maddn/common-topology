@@ -19,6 +19,7 @@
   left: 0px;
   overflow-x: hidden;
   overflow-y: scroll;
+  overscroll-behavior-y: none;
   padding: 1rem 0rem;
   position: absolute;
   top: 0px;
