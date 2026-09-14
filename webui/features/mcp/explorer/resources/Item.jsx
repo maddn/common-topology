@@ -37,8 +37,9 @@ const ResourceItem = memo(function ResourceItem({
 
   // Handles static resources, resolved templates, and raw template browsing.
   // Template-only entries without values are browsed as catalog entries.
-  const uri = resource?.uri ||
-    template && templateValues && fillTemplate(template, templateValues);
+  const uri = template && templateValues
+    ? fillTemplate(template, templateValues)
+    : resource?.uri;
   const templateUri = template?.uriTemplate;
 
   const itemName = uri || templateUri;
