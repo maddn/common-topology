@@ -33,6 +33,10 @@ const menuSlice = createSlice({
       state.openTopology = state.openTopology === payload ? undefined : payload;
     },
 
+    setOpenTopology: (state, { payload }) => {
+      state.openTopology = payload;
+    },
+
     toggleContext: (state, { payload }) => {
       state.openContext = state.openContext === payload ? undefined : payload;
     },
@@ -54,6 +58,7 @@ const menuSlice = createSlice({
 
 const { actions, reducer } = menuSlice;
 export const {
-  topologyToggled, toggleContext, setOpenService, setConfigReferences
+  topologyToggled, setOpenTopology, toggleContext, setOpenService,
+  setConfigReferences
 } = actions;
 export default reducer;

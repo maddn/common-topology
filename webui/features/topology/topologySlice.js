@@ -82,6 +82,10 @@ const topologySlice = createSlice({
         : [ ...state.visibleUnderlays, payload ];
     },
 
+    setVisibleUnderlays: (state, { payload }) => {
+      state.visibleUnderlays = payload || [];
+    },
+
     containerZoomToggled: (state, action) => {
       state.zoomedContainer = state.zoomedContainer === action.payload
         ? undefined : action.payload;
@@ -135,7 +139,7 @@ const { actions, reducer } = topologySlice;
 export const {
   dimensionsChanged, itemDragged, iconHovered,
   connectionSelected, iconSelected, iconExpandToggled,
-  underlayToggled, containerZoomToggled,
+  underlayToggled, setVisibleUnderlays, containerZoomToggled,
   editModeToggled, rightSidebarChanged, connectionInfoToggled,
   iconSizeChanged, terminalToggled, hideConsoleViewer,
   highlightedIconsUpdated } = actions;

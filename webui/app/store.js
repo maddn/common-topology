@@ -1,4 +1,5 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore,
+         createListenerMiddleware } from '@reduxjs/toolkit';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER,
          persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -9,6 +10,8 @@ import mcpReducer from 'features/mcp/mcpSlice';
 import topologyReducer from 'features/topology/topologySlice';
 import menuReducer from 'features/menu/menuSlice';
 import nsoReducer from 'features/nso/nsoSlice';
+import { restorePreferences,
+         startPreferenceListeners } from './durablePreferences';
 
 const topologyPersistConfig = {
   key: 'topology',
@@ -16,8 +19,6 @@ const topologyPersistConfig = {
   whitelist: [
     'zoomedContainer',
     'expandedIcons',
-    'visibleUnderlays',
-    'iconSize',
     'rightSidebar'
   ]
 };
@@ -25,8 +26,10 @@ const topologyPersistConfig = {
 const menuPersistConfig = {
   key: 'menu',
   storage: storage,
-  whitelist: [ 'openTopology', 'openContext', 'openService' ]
+  whitelist: [ 'openContext', 'openService' ]
 };
+
+const listenerMiddleware = createListenerMiddleware();
 
 export const rootReducer = combineReducers({
   nso: nsoReducer,
@@ -45,5 +48,9 @@ export const store = configureStore({
         FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
     },
     immutableCheck: false
-  }).concat(jsonRpcApi.middleware, mcpApi.middleware)
+  }).prepend(listenerMiddleware.middleware)
+    .concat(jsonRpcApi.middleware, mcpApi.middleware)
 });
+
+restorePreferences(store.dispatch);
+startPreferenceListeners(listenerMiddleware);
