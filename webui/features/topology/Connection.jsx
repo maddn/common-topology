@@ -29,7 +29,7 @@ import { useQuerySelection } from './QuerySelectionContext';
 
 // === Queries ================================================================
 
-function __useConnectionsQuery(selectFromResult) {
+function useConnectionsQuery(selectFromResult) {
   const { connections: connectionsQuery } = useQuerySelection();
   return useQueryQuery({
     xpathExpr: '/topologies/topology/links/link',
@@ -38,9 +38,9 @@ function __useConnectionsQuery(selectFromResult) {
   }, { selectFromResult });
 }
 
-export function useConnectionsQuery() {
+export function useTopologyConnectionsQuery() {
   const topology = useSelector(getOpenTopologyName);
-  return __useConnectionsQuery(useMemo(() =>
+  return useConnectionsQuery(useMemo(() =>
     createItemsSelector('parentName', topology), [ topology ]));
 }
 
@@ -63,7 +63,7 @@ export function useConnectedDevices(name) {
     devices => ({ data: JSON.parse(devices) })
   ), [ topology, name ]);
 
-  return __useConnectionsQuery(selector).data;
+  return useConnectionsQuery(selector).data;
 }
 
 // === Utils ==================================================================

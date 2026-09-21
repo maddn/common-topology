@@ -38,7 +38,7 @@ import { useQuerySelection } from './QuerySelectionContext';
 
 // === Queries ================================================================
 
-function __useDevicesQuery(selectFromResult) {
+function useDevicesQuery(selectFromResult) {
   const { devices: devicesQuery } = useQuerySelection();
   return useQueryQuery({
     xpathExpr: '/topologies/topology/devices/device',
@@ -56,15 +56,15 @@ function __useDevicesQuery(selectFromResult) {
   );
 }
 
-export function useDevicesQuery() {
+export function useTopologyDevicesQuery() {
   const topology = useSelector(getOpenTopologyName);
-  return __useDevicesQuery(useMemo(() =>
+  return useDevicesQuery(useMemo(() =>
     createItemsSelector('parentName', topology), [ topology ]));
 }
 
 export function useDevice(name) {
   const topology = useSelector(getOpenTopologyName);
-  const device = __useDevicesQuery(selectItemWithArray([
+  const device = useDevicesQuery(selectItemWithArray([
     [ 'parentName', topology ], [ 'name', name ]
   ])).data;
   if (name && !device) {
@@ -73,7 +73,7 @@ export function useDevice(name) {
   return device;
 }
 
-function __useZoomedIconsQuery(selectFromResult) {
+function useZoomedIconsQuery(selectFromResult) {
   return useQueryQuery({
     xpathExpr: '/topologies/topology/devices/device/icon/zoomed',
     selection: [
@@ -86,9 +86,9 @@ function __useZoomedIconsQuery(selectFromResult) {
   );
 }
 
-export function useZoomedIconsQuery() {
+export function useTopologyZoomedIconsQuery() {
   const topology = useSelector(getOpenTopologyName);
-  return __useZoomedIconsQuery(useMemo(() =>
+  return useZoomedIconsQuery(useMemo(() =>
     createItemsSelector('ancestorName', topology), [ topology ]));
 }
 
@@ -221,7 +221,7 @@ export function useIconPositionCalculator() {
   const { containers, dimensions } = useContext(LayoutContext);
   const visibleUnderlays = useSelector((state) => getVisibleUnderlays(state));
   const zoomedContainer = useSelector((state) => getZoomedContainer(state));
-  const zoomedIcons = useZoomedIconsQuery().data;
+  const zoomedIcons = useTopologyZoomedIconsQuery().data;
 
   return useCallback(device => {
     if (!device || !containers) {
@@ -264,9 +264,9 @@ function Icon({ name, getDeviceStatus }) {
   const highlighted = useSelector(
     (state) => getHighlightedIcons(state)?.includes(name));
   const editMode = useSelector((state) => getEditMode(state));
-  const openTopologyKeypath = useSelector((state) => getOpenTopology(state));
+  const openTopology = useSelector((state) => getOpenTopology(state));
 
-  const openTopology = useSelector(getOpenTopologyName);
+  const openTopologyName = useSelector(getOpenTopologyName);
   const zoomedContainer = useSelector((state) => getZoomedContainer(state));
   const container = zoomedContainer || device.container;
 
@@ -324,10 +324,10 @@ function Icon({ name, getDeviceStatus }) {
         });
       } else {
         create({
-          keypath: `${openTopologyKeypath}/links/link`,
+          keypath: `${openTopology}/links/link`,
           name: `${aEndDevice} ${zEndDevice}`,
           aEndDevice, zEndDevice,
-          parentName: openTopology,
+          parentName: openTopologyName,
         });
       }
 

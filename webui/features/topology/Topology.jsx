@@ -4,14 +4,15 @@ import { useDispatch } from 'react-redux';
 import ReactResizeDetector from 'react-resize-detector';
 
 import Container from './Container';
-import Connection, { useConnectionsQuery } from './Connection';
-import Icon, { useDevicesQuery, useZoomedIconsQuery, usePlatformsQuery } from './Icon';
+import Connection, { useTopologyConnectionsQuery } from './Connection';
+import Icon, { useTopologyDevicesQuery, useTopologyZoomedIconsQuery,
+               usePlatformsQuery } from './Icon';
 import DragLayerCanvas from './DragLayerCanvas';
 import CustomDragLayer from './CustomDragLayer';
 import LoadingOverlay from '../common/LoadingOverlay';
 
-import { LayoutContextProvider, getZoomedLayout,
-         useLayoutsQuery, useZoomedLayoutsQuery } from './LayoutContext';
+import { LayoutContextProvider, getZoomedContainers,
+         useLayoutQuery, useZoomedLayoutQuery } from './LayoutContext';
 import { dimensionsChanged } from './topologySlice';
 import { fetchStatus } from 'api/query';
 
@@ -24,11 +25,11 @@ const TopologyBody = React.memo(function TopologyBody ({ getDeviceStatus }) {
   const ref = useRef(null);
   const canvasRef = useRef();
 
-  const layouts = useLayoutsQuery();
-  const zoomedLayouts = useZoomedLayoutsQuery();
-  const devices = useDevicesQuery();
-  const zoomedIcons = useZoomedIconsQuery();
-  const connections = useConnectionsQuery();
+  const layout = useLayoutQuery();
+  const zoomedLayout = useZoomedLayoutQuery();
+  const devices = useTopologyDevicesQuery();
+  const zoomedIcons = useTopologyZoomedIconsQuery();
+  const connections = useTopologyConnectionsQuery();
   const platforms = usePlatformsQuery();
 
   const resize = () => {
@@ -45,9 +46,9 @@ const TopologyBody = React.memo(function TopologyBody ({ getDeviceStatus }) {
           <span className="header__title-text">Select a topology...</span>
         </div>
         <div className="component__layer">
-          {layouts.data?.flatMap(({ name }) => [
+          {layout.data?.flatMap(({ name }) => [
             name,
-            ...getZoomedLayout(zoomedLayouts.data, name).map(({ name }) => name)
+            ...getZoomedContainers(zoomedLayout.data, name).map(({ name }) => name)
           ]).map(container =>
             <Container key={container} name={container} />
           )}
@@ -79,8 +80,8 @@ const TopologyBody = React.memo(function TopologyBody ({ getDeviceStatus }) {
         </div>
       </div>
       <LoadingOverlay items={{
-        'Layouts':        fetchStatus(layouts),
-        'Zoomed Layouts': fetchStatus(zoomedLayouts),
+        'Layouts':        fetchStatus(layout),
+        'Zoomed Layouts': fetchStatus(zoomedLayout),
         'Devices':        fetchStatus(devices),
         'Zoomed Icons':   fetchStatus(zoomedIcons),
         'Connections':    fetchStatus(connections),

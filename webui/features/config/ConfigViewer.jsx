@@ -2,7 +2,8 @@ import './config.css';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { usePlatformsQuery, useDevicesQuery } from 'features/topology/Icon';
+import { usePlatformsQuery,
+         useTopologyDevicesQuery } from 'features/topology/Icon';
 import { getExpandedIcons,
          getRightSidebar } from 'features/topology/topologySlice';
 import { getOpenTopology,
@@ -29,7 +30,7 @@ function ConfigViewer({
   const serviceReferences = useSelector((state) =>
     getOpenServiceReferences(state));
   const platforms = usePlatformsQuery().data;
-  const devices = useDevicesQuery().data;
+  const devices = useTopologyDevicesQuery().data;
 
   return (
     <SidebarPane

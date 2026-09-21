@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import DragLayerDrawer from './DragLayerDrawer';
 
-import { useDevice, useDevicesQuery } from './Icon';
+import { useDevice, useTopologyDevicesQuery } from './Icon';
 import { useConnectedDevices } from './Connection';
 
 import { getDraggedItem, getHoveredIcon } from './topologySlice';
@@ -22,7 +22,7 @@ function CustomDragLayer({ canvasRef }) {
     connectedDevices);
   const hoveredDevice = useDevice(useSelector((state) => getHoveredIcon(state)));
 
-  const devices = useDevicesQuery().data;
+  const devices = useTopologyDevicesQuery().data;
 
   const getDevice = (deviceName) =>
     devices?.find(device => device.name === deviceName);
