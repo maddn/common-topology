@@ -1,6 +1,6 @@
 import './common.css';
 
-import React, { memo } from 'react';
+import React, { Fragment, memo } from 'react';
 import classNames from 'classnames';
 
 const MultiStateToggle = memo(function MultiStateToggle({
@@ -9,7 +9,7 @@ const MultiStateToggle = memo(function MultiStateToggle({
   console.debug('MultiStateToggle Render');
 
   return (
-    <>
+    <Fragment>
       {label &&
         <span className="footer__text multi-state-toggle__label">
           {label}
@@ -27,7 +27,7 @@ const MultiStateToggle = memo(function MultiStateToggle({
             {option.label}
           </button>)}
       </div>
-    </>
+    </Fragment>
   );
 });
 

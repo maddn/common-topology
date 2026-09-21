@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { Fragment, memo, useState } from 'react';
 
 import InlineBtn from 'features/common/buttons/InlineBtn';
 import ToggleButton from 'features/topology/ToggleButton';
@@ -24,7 +24,7 @@ const DryRunControl = memo(function DryRunControl({ onChange }) {
     update(enabled, format === outformat ? undefined : format);
 
   return (
-    <>
+    <Fragment>
       <div className="content-group__row content-group__row--controls">
         <ToggleButton
           checked={enabled}
@@ -44,7 +44,7 @@ const DryRunControl = memo(function DryRunControl({ onChange }) {
               align="left"
             />)}
         </div>}
-    </>
+    </Fragment>
   );
 });
 

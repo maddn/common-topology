@@ -1,5 +1,5 @@
 import React from 'react';
-import { forwardRef } from 'react';
+import { forwardRef, Fragment } from 'react';
 
 import { useQuerySelection } from './QuerySelectionContext';
 
@@ -21,7 +21,7 @@ const ConnectionInfo = forwardRef(function ConnectionInfo(props, ref) {
   const offset = (visibleInfo.length - 1)/2 * spacing_em;
 
   return (
-    !hide ? <React.Fragment>
+    !hide ? <Fragment>
       {visibleInfo.map(({ label, value }, index) =>
       <div className="topology__connection-info" key={label} style={{
         transform: `rotate(${angle}deg) translate(0, ${index*spacing_em - offset}em)`
@@ -29,7 +29,7 @@ const ConnectionInfo = forwardRef(function ConnectionInfo(props, ref) {
         <div className="topology__metric">{label}</div>
         <div className="topology__metric-value">{value}</div>
       </div>)}
-    </React.Fragment>
+    </Fragment>
   : null);
 });
 

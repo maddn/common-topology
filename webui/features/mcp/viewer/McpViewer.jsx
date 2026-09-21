@@ -396,7 +396,7 @@ const McpViewer = memo(function McpViewer({
           onScroll={updateStickToBottom}
         >
           {!items.length &&
-            <>
+            <Fragment>
               <div className="mcp-viewer__activity">
                 <span className="mcp-viewer__text">
                   Run a tool or resource from MCP Explorer to show the result
@@ -409,7 +409,7 @@ const McpViewer = memo(function McpViewer({
                 groups={suggestedMessageGroups}
                 onSelect={selectSuggestedMessage}
               />
-            </>}
+            </Fragment>}
           <Timeline items={items} streaming={streaming} />
           {!sending &&
             <form

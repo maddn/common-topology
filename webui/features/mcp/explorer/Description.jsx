@@ -66,10 +66,10 @@ const Description = memo(function Description({
           {line.type === 'tag'
             ? <span className="content-group__row-label">{line.text}</span>
             : line.type === 'path'
-            ? <>
+            ? <Fragment>
                 <span className="content-group__row-label">Path:</span>
                 <span className="content-group__row-value">{line.text}</span>
-              </>
+              </Fragment>
             : <span className="content-group__row-value">{line.text}</span>}
         </div>)}
     </Fragment>
