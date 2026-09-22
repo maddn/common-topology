@@ -1,11 +1,12 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useMemo } from 'react';
 
 import { useMemoizeWhenFetched, useQueryQuery, fetchStatus, useQueryState,
          createItemsSelector } from 'api/query';
 
-import DroppableNodeList from 'features/menu/panels/DroppableNodeList';
+import NodeQueryList from 'features/menu/panels/NodeQueryList';
 import NodeListWrapper from 'features/menu/panels/NodeListWrapper';
 import NodePane from 'features/menu/panels/NodePane';
+import { useOpenState } from 'features/mcp/explorer/AccordionList';
 
 
 export const label = 'Brownfield Protection';
@@ -46,7 +47,7 @@ const OutOfBandPolicy = memo(function OutOfBandPolicy({
       nodeToggled={toggledPolicy}
       disableDelete={true}
     >
-      <DroppableNodeList
+      <NodeQueryList
         label="Rule"
         keypath={`${policy.keypath}/rule`}
         baseSelect={[
@@ -55,7 +56,6 @@ const OutOfBandPolicy = memo(function OutOfBandPolicy({
         ]}
         labelSelect={ruleSelection}
         selector={ruleSelector}
-        allowDrop={false}
         disableCreate={true}
       />
     </NodePane>
@@ -65,7 +65,7 @@ const OutOfBandPolicy = memo(function OutOfBandPolicy({
 const OutOfBandPolicies = memo(function OutOfBandPolicies() {
   console.debug('OutOfBandPolicies Render');
 
-  const [ openPolicy, setOpenPolicy ] = useState(null);
+  const { openItem, toggleItem } = useOpenState();
   const policiesQuery = useQueryQuery({
     xpathExpr: path,
     selection: policySelection
@@ -74,10 +74,6 @@ const OutOfBandPolicies = memo(function OutOfBandPolicies() {
     'OOB Policies': fetchStatus(policiesQuery),
     'OOB Policy Rules': useQueryState(rulePath)
   });
-
-  const toggledPolicy = useCallback(keypath => {
-    setOpenPolicy(open => open === keypath ? null : keypath);
-  }, []);
 
   return (
     <NodeListWrapper
@@ -91,8 +87,8 @@ const OutOfBandPolicies = memo(function OutOfBandPolicies() {
         <OutOfBandPolicy
           key={policy.keypath}
           policy={policy}
-          openPolicy={openPolicy}
-          toggledPolicy={toggledPolicy}
+          openPolicy={openItem}
+          toggledPolicy={toggleItem}
         />)}
     </NodeListWrapper>
   );

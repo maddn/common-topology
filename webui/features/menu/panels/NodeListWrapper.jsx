@@ -7,8 +7,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 import { BTN_ADD } from 'constants/Icons';
 
-import LoadingOverlay from 'features/common/LoadingOverlay';
 import NewItem from 'features/common/NewItem';
+import SidebarSection from 'features/common/SidebarSection';
 import InlineBtn from 'features/common/buttons/InlineBtn';
 import IconSvg from 'features/topology/icons/IconSvg';
 
@@ -17,49 +17,48 @@ import { connectPngDragPreview } from 'features/topology/DragLayerCanvas';
 import { useIconSize } from 'features/topology/LayoutContext';
 import { itemDragged } from 'features/topology/topologySlice';
 
-import { isFetching } from 'api/query';
+import { useCreateMutation } from 'api/data';
 
 
 const NodeListWrapper = forwardRef(function NodeListWrapper({
-  title, label, keypath, level, fetching, disableCreate, newItemDefaults,
+  title, label, keypath, fetching, disableCreate, newItemDefaults,
   newItemDragType, newItemDragIcon, defaultsPath, headerActions,
-  children
+  children, ...rest
 }, ref) {
   console.debug('NodeListWrapper Render');
 
   const [ newItemOpen, setNewItemOpen ] = useState(false);
-  const [ minHeight, setMinHeight ] = useState(0);
   const [ itemDefaults, setItemDefaults ] = useState();
 
   const dispatch = useDispatch();
+  const [ create ] = useCreateMutation();
   const btnRef = useRef(null);
   const iconSize = useIconSize();
+
+  const createNewItem = useCallback(async (name) => {
+    await create({ name, keypath, ...rest });
+    return name;
+  }, [ create, keypath, rest ]);
 
   useImperativeHandle(ref, () => ({
     openNewItem(defaults) {
       setItemDefaults(defaults);
       setNewItemOpen(true);
       dispatch(bodyOverlayToggled(true));
-    }
-  }), [ dispatch ]);
+    },
+    createNewItem
+  }), [ createNewItem, dispatch ]);
 
-  const openNewItem = () => {
+  const openNewItem = useCallback(() => {
     setItemDefaults(undefined);
     setNewItemOpen(true);
     dispatch(bodyOverlayToggled(true));
-  };
+  }, [ dispatch ]);
 
   const closeNewItem = useCallback(() => {
     setNewItemOpen(false);
     dispatch(bodyOverlayToggled(false));
-  }, []);
-
-  const measuredRef = useCallback(node => {
-    if (node !== null) {
-      const height = isFetching(fetching) ? node.scrollHeight : 0;
-      setTimeout(() => setMinHeight(height), height < minHeight ? 1000 : 0);
-    }
-  }, [ minHeight, fetching ]);
+  }, [ dispatch ]);
 
   const [ , drag, dragPreview ] = useDrag(() => ({
     type: newItemDragType || 'UNDEFINED',
@@ -86,10 +85,11 @@ const NodeListWrapper = forwardRef(function NodeListWrapper({
   const defaults = itemDefaults ?? newItemDefaults;
 
   return (
-    <Fragment>
-      {title &&
-        <div className="header">
-          <span className="header__title-text">{title}</span>
+    <SidebarSection
+      title={title}
+      fetching={fetching}
+      headerActions={
+        <Fragment>
           {!disableCreate &&
             <Fragment>
               {drag(<div><InlineBtn
@@ -111,18 +111,11 @@ const NodeListWrapper = forwardRef(function NodeListWrapper({
             </Fragment>
           }
           {headerActions}
-        </div>
+        </Fragment>
       }
-      <div
-        className="accordion__group"
-        style={{minHeight: `${minHeight}px`,
-        transition: `min-height ${minHeight === 0 ? 1000 : 0}ms`
-      }}
-      >
-        <LoadingOverlay items={fetching} ref={measuredRef}/>
-        {children}
-      </div>
-    </Fragment>
+    >
+      {children}
+    </SidebarSection>
   );
 });
 

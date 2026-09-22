@@ -1,11 +1,12 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useMemo } from 'react';
 
 import { useMemoizeWhenFetched, useQueryQuery, fetchStatus,
          createItemsSelector, useQueryState } from 'api/query';
 
-import DroppableNodeList from 'features/menu/panels/DroppableNodeList';
+import NodeQueryList from 'features/menu/panels/NodeQueryList';
 import NodeListWrapper from 'features/menu/panels/NodeListWrapper';
 import NodePane from 'features/menu/panels/NodePane';
+import { useOpenState } from 'features/mcp/explorer/AccordionList';
 
 
 export const label = 'Access Control';
@@ -54,13 +55,12 @@ const NacmRuleList = memo(function NacmRuleList({
       disableDelete={true}
       Groups={groups}
     >
-      <DroppableNodeList
+      <NodeQueryList
         label="NACM Rule"
         keypath={`${ruleList.keypath}/rule`}
         baseSelect={[ 'name', '../name' ]}
         labelSelect={ruleSelection}
         selector={ruleSelector}
-        allowDrop={false}
         disableCreate={true}
       />
     </NodePane>
@@ -73,7 +73,7 @@ const NacmRuleLists = memo(function NacmRuleLists({
 }) {
   console.debug('NacmRuleLists Render');
 
-  const [ openRuleList, setOpenRuleList ] = useState(null);
+  const { openItem, toggleItem } = useOpenState();
 
   const ruleListsQuery = useQueryQuery({
     xpathExpr: path,
@@ -91,10 +91,6 @@ const NacmRuleLists = memo(function NacmRuleLists({
       .filter(ruleList => !excludeRuleLists.includes(ruleList.name)),
     [ excludeRuleLists, ruleListsQuery.data ]);
 
-  const toggledRuleList = useCallback(keypath => {
-    setOpenRuleList(open => open === keypath ? null : keypath);
-  }, []);
-
   return (
     <NodeListWrapper
       title={label}
@@ -108,8 +104,8 @@ const NacmRuleLists = memo(function NacmRuleLists({
         <NacmRuleList
           key={ruleList.keypath}
           ruleList={ruleList}
-          openRuleList={openRuleList}
-          toggledRuleList={toggledRuleList}
+          openRuleList={openItem}
+          toggledRuleList={toggleItem}
         />)}
     </NodeListWrapper>
   );

@@ -45,6 +45,7 @@ export function ServiceList({
 
   const getContextName = module.getContextName || (item => item.topology);
   const getServiceName = module.getServiceName || (item => item.name);
+  const contexts = [ ...new Set(services?.map(getContextName)) ];
 
   return (
     <NodeListWrapper
@@ -58,7 +59,7 @@ export function ServiceList({
         [ { path: module.newItemContextLeaf, value: contextName } ]}
       {...props}
     >
-      {[...new Set(services?.map(getContextName))].map(
+      {contexts.map(
         context =>
           <div key={context}>
             <Accordion

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import Accordion from 'features/common/Accordion';
@@ -19,10 +18,10 @@ function CreatableService({ label, keypath }) {
   const dispatch = useDispatch();
 
   const [ create ] = useCreateMutation();
-  const createNode = useCallback(() => {
+  const createNode = () => {
     create({ keypath });
     dispatch(stopThenGoToUrl(configurationEditorUrl(keypath, true)));
-  });
+  };
 
   return (
     <Accordion

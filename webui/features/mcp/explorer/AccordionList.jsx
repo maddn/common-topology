@@ -1,33 +1,63 @@
 import React from 'react';
-import { memo, useState, useCallback, useRef, useMemo,
-         cloneElement, Children } from 'react';
+import { memo, useMemo, cloneElement, Children, useCallback, useEffect, useRef,
+         useState } from 'react';
 
 import Accordion from 'features/common/Accordion';
 
+
+export function useOpenState() {
+  const [ openItem, setOpenItem ] = useState();
+
+  const toggleItem = useCallback(item =>
+    setOpenItem(openItem => openItem === item ? undefined : item), []);
+
+  const clearOpenItem = useCallback(() => {
+    setOpenItem(undefined);
+  }, []);
+
+  return { openItem, toggleItem, clearOpenItem };
+}
+
+export function useOpenStateForItem(resetKey) {
+  const { openItem, toggleItem, clearOpenItem } = useOpenState();
+  const toggles = useRef({});
+  const resetKeyRef = useRef(resetKey);
+
+  useEffect(() => {
+    if (resetKeyRef.current !== resetKey) {
+      resetKeyRef.current = resetKey;
+      clearOpenItem();
+    }
+  }, [ clearOpenItem, resetKey ]);
+
+  const toggleForItem = useCallback(item => {
+    if (!toggles.current[item]) {
+      toggles.current[item] = () => toggleItem(item);
+    }
+    return toggles.current[item];
+  }, [ toggleItem ]);
+
+  const openStateForItem = useCallback(item => ({
+    isOpen: openItem === item,
+    fade: !!openItem,
+    toggle: toggleForItem(item)
+  }), [ openItem, toggleForItem ]);
+
+  return openStateForItem;
+}
 
 const AccordionList = memo(function AccordionList({
   title, isOpen, fade, toggle, contextNote, children
 }) {
   console.debug('AccordionList Render');
 
-  const [ openItem, setOpenItem ] = useState(undefined);
-  const toggleItem = useCallback(item =>
-    setOpenItem(openItem => openItem === item ? undefined : item), []);
-  const itemToggles = useRef({});
-  const toggleForItem = useCallback(item => {
-    if (!itemToggles.current[item]) {
-      itemToggles.current[item] = () => toggleItem(item);
-    }
-    return itemToggles.current[item];
-  }, [ toggleItem ]);
+  const openStateForItem = useOpenStateForItem();
   const items = useMemo(() =>
     children && Children.map(children, child =>
       child && cloneElement(child, {
-        isOpen: openItem === child.key,
-        fade: !!openItem,
-        toggle: toggleForItem(child.key),
+        ...openStateForItem(child.key)
       })
-    ), [ children, openItem, toggleForItem ]);
+    ), [ children, openStateForItem ]);
 
   return (
     <Accordion

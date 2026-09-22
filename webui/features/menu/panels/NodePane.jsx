@@ -25,17 +25,17 @@ const NodePane = memo(function NodePane({
   }, [ keypath, nodeToggled ]);
 
   const dispatch = useDispatch();
-  const goToNode = useCallback((event) => {
+  const goToNode = (event) => {
     event.stopPropagation();
     dispatch(stopThenGoToUrl(configurationEditorUrl(keypath)));
-  });
+  };
 
   const [ deletePath ] = useDeletePathMutation();
-  const deleteNode = useCallback(async (event) => {
+  const deleteNode = async (event) => {
     event.stopPropagation();
     await deletePath({ keypath, queryKey });
     if (isOpen) { toggle(); }
-  });
+  };
   const headerTitle = <Fragment>{underscore ?
     <u>{title.charAt(0)}</u> : title.charAt(0)}{title.substr(1)}</Fragment>;
 

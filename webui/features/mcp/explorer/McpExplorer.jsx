@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useRef, useState } from 'react';
+import React, { Fragment, memo, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -17,6 +17,7 @@ import SidebarPane from 'features/common/SidebarPane';
 import SidebarSection from 'features/common/SidebarSection';
 import StatusDot from 'features/common/StatusDot';
 import InlineBtn from 'features/common/buttons/InlineBtn';
+import { useOpenStateForItem } from './AccordionList';
 
 import Policy from './Policy';
 import ReadTools from './tools/Read';
@@ -96,7 +97,7 @@ const McpExplorer = memo(function McpExplorer({
   const serverTooltip = useServerTooltip(serverStatus);
 
   const [ openView, setOpenView ] = useState('curated');
-  const [ openGroup, setOpenGroup ] = useState();
+  const openStateForItem = useOpenStateForItem(openView);
   const toggleViewer = useCallback(() => {
     dispatch(viewerToggled());
   }, [ dispatch ]);
@@ -104,33 +105,17 @@ const McpExplorer = memo(function McpExplorer({
     dispatch(viewerVisibleSet(true));
     dispatch(itemAdded(value));
   }, [ dispatch ]);
-
-  const toggleGroup = useCallback(group =>
-    setOpenGroup(openGroup => openGroup === group ? undefined : group), []);
-  const groupToggles = useRef({});
-  const toggleForGroup = useCallback(group => {
-    if (!groupToggles.current[group]) {
-      groupToggles.current[group] = () => toggleGroup(group);
-    }
-    return groupToggles.current[group];
-  }, [ toggleGroup ]);
-
   const groupProps = useCallback(group => ({
-    isOpen: openGroup === group,
-    fade: !!openGroup,
-    toggle: toggleForGroup(group),
+    ...openStateForItem(group),
     onOutput: output
-  }), [ openGroup, output, toggleForGroup ]);
+  }), [ output, openStateForItem ]);
 
   const viewSelector = (view, title) => (
     <Accordion
       level="0"
       title={title}
       isOpen={openView === view}
-      toggle={() => {
-        setOpenView(view);
-        setOpenGroup(undefined);
-      }}
+      toggle={() => setOpenView(view)}
     />
   );
 

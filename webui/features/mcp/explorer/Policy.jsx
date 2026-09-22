@@ -5,8 +5,8 @@ import { useDeleteJsonConfig, useLoadJsonConfig } from 'api/loadJsonConfig';
 import { fetchStatus, useMemoizeWhenFetched, useQueryState } from 'api/query';
 import { BTN_RESTART } from 'constants/Icons';
 
-import DroppableNodeList from 'features/menu/panels/DroppableNodeList';
 import InlineBtn from 'features/common/buttons/InlineBtn';
+import NodeQueryList from 'features/menu/panels/NodeQueryList';
 import NodePane from 'features/menu/panels/NodePane';
 import NodeListWrapper from 'features/menu/panels/NodeListWrapper';
 
@@ -97,13 +97,12 @@ const Policy = memo(function Policy({ policyRules = [] }) {
         }
         { ...{ 'Default Action': defaultAction } }
       >
-        <DroppableNodeList
+        <NodeQueryList
           label="Policy Rule"
           keypath={rulePath}
           baseSelect={[ 'sequence' ]}
           labelSelect={ruleSelection}
           getTitle={policyRuleTitle}
-          allowDrop={false}
           disableCreate={true}
         />
       </NodePane>
