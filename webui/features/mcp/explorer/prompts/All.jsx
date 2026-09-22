@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react';
 
 import { usePromptsQuery } from 'api/mcp';
 
-import AccordionList from '../AccordionList';
+import AccordionGroup from 'features/common/AccordionGroup';
 import PromptItem from './Item';
 
 
@@ -62,7 +62,7 @@ const AllPrompts = memo(function AllPrompts({
     ), [ onOutput, prompts ]);
 
   return (
-    <AccordionList
+    <AccordionGroup
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
@@ -70,7 +70,7 @@ const AllPrompts = memo(function AllPrompts({
       contextNote={CONTEXT_NOTE}
     >
       {items}
-    </AccordionList>
+    </AccordionGroup>
   );
 });
 

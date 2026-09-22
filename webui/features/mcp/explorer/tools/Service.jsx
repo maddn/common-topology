@@ -1,6 +1,6 @@
 import React, { Fragment, memo, useMemo } from 'react';
 
-import AccordionList from '../AccordionList';
+import AccordionGroup from 'features/common/AccordionGroup';
 import Redeploy from './service/Redeploy';
 import Undeploy from './service/Undeploy';
 import CheckSync from './service/CheckSync';
@@ -39,7 +39,7 @@ const ServiceTools = memo(function ServiceTools({
     checkSyncTool || getModificationsTool;
 
   return hasTools ? (
-    <AccordionList
+    <AccordionGroup
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
@@ -78,7 +78,7 @@ const ServiceTools = memo(function ServiceTools({
           service={serviceName}
           onOutput={onOutput}
         />}
-    </AccordionList>
+    </AccordionGroup>
   ) : null;
 });
 

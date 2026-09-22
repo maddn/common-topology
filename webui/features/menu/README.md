@@ -67,7 +67,7 @@ A service module should provide:
   current context
 - `useQuery(itemSelector, stacked)` for stacked/input data when `stacked` is
   true and direct/lower service data when it is false
-- `useFetchStatus()` for the status labels shown by `NodeListWrapper`
+- `useFetchStatus()` for the status labels shown by `CreatableNodeSection`
 - `getContextName` when context membership is not a plain `topology` leaf
 - `getServiceName` when the service identity is not a plain `name` leaf
 - a component that resolves the displayed data path, service-operation path,

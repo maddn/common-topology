@@ -2,7 +2,7 @@ import React, { Fragment, memo, useMemo } from 'react';
 
 import { removePrefixes } from 'api/query';
 
-import AccordionList from '../AccordionList';
+import AccordionGroup from 'features/common/AccordionGroup';
 import ResourceItem, { useResources, useResourceTemplates } from './Item';
 
 import { useMcpServiceName } from '../../selection';
@@ -77,7 +77,7 @@ const ServiceResources = memo(function ServiceResources({
   const hasItems = resources.length > 0 || templates.length > 0;
 
   return hasItems ? (
-    <AccordionList
+    <AccordionGroup
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
@@ -85,7 +85,7 @@ const ServiceResources = memo(function ServiceResources({
       contextNote={contextNote}
     >
       {items}
-    </AccordionList>
+    </AccordionGroup>
   ) : null;
 });
 

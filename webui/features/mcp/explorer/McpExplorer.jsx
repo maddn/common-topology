@@ -17,7 +17,7 @@ import SidebarPane from 'features/common/SidebarPane';
 import SidebarSection from 'features/common/SidebarSection';
 import StatusDot from 'features/common/StatusDot';
 import InlineBtn from 'features/common/buttons/InlineBtn';
-import { useOpenStateForItem } from './AccordionList';
+import { useOpenStateForItem } from 'features/common/AccordionGroup';
 
 import Policy from './Policy';
 import ReadTools from './tools/Read';

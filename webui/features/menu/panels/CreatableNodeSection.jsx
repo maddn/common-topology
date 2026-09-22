@@ -20,12 +20,12 @@ import { itemDragged } from 'features/topology/topologySlice';
 import { useCreateMutation } from 'api/data';
 
 
-const NodeListWrapper = forwardRef(function NodeListWrapper({
+const CreatableNodeSection = forwardRef(function CreatableNodeSection({
   title, label, keypath, fetching, disableCreate, newItemDefaults,
   newItemDragType, newItemDragIcon, defaultsPath, headerActions,
   children, ...rest
 }, ref) {
-  console.debug('NodeListWrapper Render');
+  console.debug('CreatableNodeSection Render');
 
   const [ newItemOpen, setNewItemOpen ] = useState(false);
   const [ itemDefaults, setItemDefaults ] = useState();
@@ -119,4 +119,4 @@ const NodeListWrapper = forwardRef(function NodeListWrapper({
   );
 });
 
-export default NodeListWrapper;
+export default CreatableNodeSection;

@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 
-import AccordionList from '../AccordionList';
+import AccordionGroup from 'features/common/AccordionGroup';
 import ResourceItem, { useResources } from './Item';
 
 
@@ -35,7 +35,7 @@ const SystemResources = memo(function SystemResources({
     }).filter(Boolean), [ onOutput, resources ]);
 
   return resources.length > 0 ? (
-    <AccordionList
+    <AccordionGroup
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
@@ -43,7 +43,7 @@ const SystemResources = memo(function SystemResources({
       contextNote={CONTEXT_NOTE}
     >
       {items}
-    </AccordionList>
+    </AccordionGroup>
   ) : null;
 });
 

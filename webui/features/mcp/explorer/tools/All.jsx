@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react';
 
 import { useToolsQuery } from 'api/mcp';
 
-import AccordionList from '../AccordionList';
+import AccordionGroup from 'features/common/AccordionGroup';
 import ToolItem from './Item';
 
 
@@ -29,7 +29,7 @@ const AllTools = memo(function AllTools({
     ), [ onOutput, tools ]);
 
   return (
-    <AccordionList
+    <AccordionGroup
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
@@ -37,7 +37,7 @@ const AllTools = memo(function AllTools({
       contextNote={CONTEXT_NOTE}
     >
       {items}
-    </AccordionList>
+    </AccordionGroup>
   );
 });
 

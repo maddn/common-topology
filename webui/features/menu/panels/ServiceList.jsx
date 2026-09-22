@@ -1,6 +1,6 @@
 import React from 'react';
 
-import NodeListWrapper from './NodeListWrapper';
+import CreatableNodeSection from './CreatableNodeSection';
 import Accordion from 'features/common/Accordion';
 
 import { useQueryState as _useQueryState, selectItem } from 'api/query';
@@ -48,7 +48,7 @@ export function ServiceList({
   const contexts = [ ...new Set(services?.map(getContextName)) ];
 
   return (
-    <NodeListWrapper
+    <CreatableNodeSection
       title={module.title || `${module.label}s`}
       label={module.label}
       keypath={hasStackedService
@@ -81,7 +81,7 @@ export function ServiceList({
             </Accordion>
           </div>
       )}
-    </NodeListWrapper>
+    </CreatableNodeSection>
   );
 }
 

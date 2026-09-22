@@ -4,9 +4,9 @@ import { useMemoizeWhenFetched, useQueryQuery, fetchStatus, useQueryState,
          createItemsSelector } from 'api/query';
 
 import NodeQueryList from 'features/menu/panels/NodeQueryList';
-import NodeListWrapper from 'features/menu/panels/NodeListWrapper';
+import CreatableNodeSection from 'features/menu/panels/CreatableNodeSection';
 import NodePane from 'features/menu/panels/NodePane';
-import { useOpenState } from 'features/mcp/explorer/AccordionList';
+import { useOpenState } from 'features/common/AccordionGroup';
 
 
 export const label = 'Brownfield Protection';
@@ -76,7 +76,7 @@ const OutOfBandPolicies = memo(function OutOfBandPolicies() {
   });
 
   return (
-    <NodeListWrapper
+    <CreatableNodeSection
       title={label}
       label="Out-of-band Policy"
       keypath={path}
@@ -90,7 +90,7 @@ const OutOfBandPolicies = memo(function OutOfBandPolicies() {
           openPolicy={openItem}
           toggledPolicy={toggleItem}
         />)}
-    </NodeListWrapper>
+    </CreatableNodeSection>
   );
 });
 

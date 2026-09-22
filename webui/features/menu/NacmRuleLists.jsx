@@ -4,9 +4,9 @@ import { useMemoizeWhenFetched, useQueryQuery, fetchStatus,
          createItemsSelector, useQueryState } from 'api/query';
 
 import NodeQueryList from 'features/menu/panels/NodeQueryList';
-import NodeListWrapper from 'features/menu/panels/NodeListWrapper';
+import CreatableNodeSection from 'features/menu/panels/CreatableNodeSection';
 import NodePane from 'features/menu/panels/NodePane';
-import { useOpenState } from 'features/mcp/explorer/AccordionList';
+import { useOpenState } from 'features/common/AccordionGroup';
 
 
 export const label = 'Access Control';
@@ -92,7 +92,7 @@ const NacmRuleLists = memo(function NacmRuleLists({
     [ excludeRuleLists, ruleListsQuery.data ]);
 
   return (
-    <NodeListWrapper
+    <CreatableNodeSection
       title={label}
       label="NACM Rule List"
       keypath={path}
@@ -107,7 +107,7 @@ const NacmRuleLists = memo(function NacmRuleLists({
           openRuleList={openItem}
           toggledRuleList={toggleItem}
         />)}
-    </NodeListWrapper>
+    </CreatableNodeSection>
   );
 });
 

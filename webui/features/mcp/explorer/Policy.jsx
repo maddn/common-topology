@@ -8,7 +8,7 @@ import { BTN_RESTART } from 'constants/Icons';
 import InlineBtn from 'features/common/buttons/InlineBtn';
 import NodeQueryList from 'features/menu/panels/NodeQueryList';
 import NodePane from 'features/menu/panels/NodePane';
-import NodeListWrapper from 'features/menu/panels/NodeListWrapper';
+import CreatableNodeSection from 'features/menu/panels/CreatableNodeSection';
 
 
 const label = 'Policies';
@@ -68,7 +68,7 @@ const Policy = memo(function Policy({ policyRules = [] }) {
   };
 
   return (
-    <NodeListWrapper
+    <CreatableNodeSection
       title="MCP Server"
       fetching={fetching}
       disableCreate={true}
@@ -106,7 +106,7 @@ const Policy = memo(function Policy({ policyRules = [] }) {
           disableCreate={true}
         />
       </NodePane>
-    </NodeListWrapper>
+    </CreatableNodeSection>
   );
 });
 

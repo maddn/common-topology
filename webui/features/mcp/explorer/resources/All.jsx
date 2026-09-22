@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react';
 
 import { useResourcesQuery } from 'api/mcp';
 
-import AccordionList from '../AccordionList';
+import AccordionGroup from 'features/common/AccordionGroup';
 import ResourceItem from './Item';
 
 
@@ -28,7 +28,7 @@ const AllResources = memo(function AllResources({
     ), [ onOutput, resources ]);
 
   return (
-    <AccordionList
+    <AccordionGroup
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
@@ -36,7 +36,7 @@ const AllResources = memo(function AllResources({
       contextNote={CONTEXT_NOTE}
     >
       {items}
-    </AccordionList>
+    </AccordionGroup>
   );
 });
 

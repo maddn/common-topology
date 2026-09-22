@@ -14,7 +14,7 @@ export const DROP_BEHAVIOUR_CREATE_ONLY = 0;
 export const DROP_BEHAVIOUR_OPEN_NEW_ITEM = 1;
 export const DROP_BEHAVIOUR_GOTO = 2;
 
-function DroppableNodeList({
+function DroppableNodeQueryList({
   label, keypath, noTitle,
   baseSelect, labelSelect, isLeafList, selector,
   allowDrop, accept,
@@ -24,7 +24,7 @@ function DroppableNodeList({
   getTitle, disableCreate, disableGoTo,
   ...rest
 }) {
-  console.debug('DroppableNodeList Render');
+  console.debug('DroppableNodeQueryList Render');
   const dispatch = useDispatch();
   const nodeListRef = useRef({});
 
@@ -84,4 +84,4 @@ function DroppableNodeList({
   );
 }
 
-export default DroppableNodeList;
+export default DroppableNodeQueryList;

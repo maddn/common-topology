@@ -1,10 +1,10 @@
 import React from 'react';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 
-import { useOpenState } from 'features/mcp/explorer/AccordionList';
+import { useOpenState } from 'features/common/AccordionGroup';
 
 import NodePane from './NodePane';
-import NodeListWrapper from './NodeListWrapper';
+import CreatableNodeSection from './CreatableNodeSection';
 
 import { pathKeyRegex, swapLabels, useQueryQuery } from 'api/query';
 
@@ -44,7 +44,7 @@ const NodeQueryList = forwardRef(function NodeQueryList({
   }), [ calculateName, data ]);
 
   return (
-    <NodeListWrapper
+    <CreatableNodeSection
       title={!noTitle && `${label}s`}
       keypath={keypath}
       label={label}
@@ -70,7 +70,7 @@ const NodeQueryList = forwardRef(function NodeQueryList({
           { ...swapLabels(removeEmptyFields(item), labelSelect) }
         />
       )}
-    </NodeListWrapper>
+    </CreatableNodeSection>
   );
 });
 

@@ -1,6 +1,6 @@
 import React, { Fragment, memo, useMemo } from 'react';
 
-import AccordionList from '../AccordionList';
+import AccordionGroup from 'features/common/AccordionGroup';
 import ResourceItem, { useResourceTemplates } from './Item';
 
 import { useMcpDevice } from '../../selection';
@@ -48,7 +48,7 @@ const DeviceResources = memo(function DeviceResources({
     }).filter(Boolean), [ device, onOutput, templates ]);
 
   return templates.length > 0 ? (
-    <AccordionList
+    <AccordionGroup
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
@@ -56,7 +56,7 @@ const DeviceResources = memo(function DeviceResources({
       contextNote={contextNote}
     >
       {items}
-    </AccordionList>
+    </AccordionGroup>
   ) : null;
 });
 

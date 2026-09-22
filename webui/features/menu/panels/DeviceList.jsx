@@ -1,13 +1,13 @@
 import React from 'react';
 
-import DroppableNodeList from './DroppableNodeList';
+import DroppableNodeQueryList from './DroppableNodeQueryList';
 
 
 function DeviceList({ select, ...rest }) {
   console.debug('DeviceList Render');
 
   return (
-    <DroppableNodeList
+    <DroppableNodeQueryList
       allowDrop={true}
       disableCreate={true}
       disableGoTo={true}

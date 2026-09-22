@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { removeKeys } from 'api/query';
 import { getOpenService } from 'features/menu/menuSlice';
 
-import AccordionList from '../AccordionList';
+import AccordionGroup from 'features/common/AccordionGroup';
 import ToolItem, { useTools } from './Item';
 
 
@@ -56,7 +56,7 @@ const ReadTools = memo(function ReadTools({
     }).filter(Boolean), [ onOutput, path, tools ]);
 
   return tools.length > 0 ? (
-    <AccordionList
+    <AccordionGroup
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
@@ -64,7 +64,7 @@ const ReadTools = memo(function ReadTools({
       contextNote={contextNote}
     >
       {items}
-    </AccordionList>
+    </AccordionGroup>
   ) : null;
 });
 

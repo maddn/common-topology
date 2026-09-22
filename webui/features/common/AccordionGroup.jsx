@@ -46,10 +46,10 @@ export function useOpenStateForItem(resetKey) {
   return openStateForItem;
 }
 
-const AccordionList = memo(function AccordionList({
+const AccordionGroup = memo(function AccordionGroup({
   title, isOpen, fade, toggle, contextNote, children
 }) {
-  console.debug('AccordionList Render');
+  console.debug('AccordionGroup Render');
 
   const openStateForItem = useOpenStateForItem();
   const items = useMemo(() =>
@@ -79,4 +79,4 @@ const AccordionList = memo(function AccordionList({
   );
 });
 
-export default AccordionList;
+export default AccordionGroup;
