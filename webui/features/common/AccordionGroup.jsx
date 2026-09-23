@@ -5,7 +5,7 @@ import { memo, useMemo, cloneElement, Children, useCallback, useEffect, useRef,
 import Accordion from 'features/common/Accordion';
 
 
-export function useOpenState() {
+export function useSingleOpenState() {
   const [ openItem, setOpenItem ] = useState();
 
   const toggleItem = useCallback(item =>
@@ -18,8 +18,8 @@ export function useOpenState() {
   return { openItem, toggleItem, clearOpenItem };
 }
 
-export function useOpenStateForItem(resetKey) {
-  const { openItem, toggleItem, clearOpenItem } = useOpenState();
+export function useSingleOpenStateForGroup(resetKey) {
+  const { openItem, toggleItem, clearOpenItem } = useSingleOpenState();
   const toggles = useRef({});
   const resetKeyRef = useRef(resetKey);
 
@@ -37,13 +37,13 @@ export function useOpenStateForItem(resetKey) {
     return toggles.current[item];
   }, [ toggleItem ]);
 
-  const openStateForItem = useCallback(item => ({
+  const getSingleOpenState = useCallback(item => ({
     isOpen: openItem === item,
     fade: !!openItem,
     toggle: toggleForItem(item)
   }), [ openItem, toggleForItem ]);
 
-  return openStateForItem;
+  return getSingleOpenState;
 }
 
 const AccordionGroup = memo(function AccordionGroup({
@@ -51,13 +51,13 @@ const AccordionGroup = memo(function AccordionGroup({
 }) {
   console.debug('AccordionGroup Render');
 
-  const openStateForItem = useOpenStateForItem();
+  const getSingleOpenState = useSingleOpenStateForGroup();
   const items = useMemo(() =>
     children && Children.map(children, child =>
       child && cloneElement(child, {
-        ...openStateForItem(child.key)
+        ...getSingleOpenState(child.key)
       })
-    ), [ children, openStateForItem ]);
+    ), [ children, getSingleOpenState ]);
 
   return (
     <Accordion

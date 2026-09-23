@@ -6,7 +6,7 @@ import { useMemoizeWhenFetched, useQueryQuery, fetchStatus, useQueryState,
 import NodeQueryList from 'features/menu/panels/NodeQueryList';
 import CreatableNodeSection from 'features/menu/panels/CreatableNodeSection';
 import NodePane from 'features/menu/panels/NodePane';
-import { useOpenState } from 'features/common/AccordionGroup';
+import { useSingleOpenState } from 'features/common/AccordionGroup';
 
 
 export const label = 'Brownfield Protection';
@@ -65,7 +65,7 @@ const OutOfBandPolicy = memo(function OutOfBandPolicy({
 const OutOfBandPolicies = memo(function OutOfBandPolicies() {
   console.debug('OutOfBandPolicies Render');
 
-  const { openItem, toggleItem } = useOpenState();
+  const { openItem, toggleItem } = useSingleOpenState();
   const policiesQuery = useQueryQuery({
     xpathExpr: path,
     selection: policySelection

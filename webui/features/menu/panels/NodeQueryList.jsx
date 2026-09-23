@@ -1,7 +1,7 @@
 import React from 'react';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 
-import { useOpenState } from 'features/common/AccordionGroup';
+import { useSingleOpenState } from 'features/common/AccordionGroup';
 
 import NodePane from './NodePane';
 import CreatableNodeSection from './CreatableNodeSection';
@@ -22,7 +22,7 @@ const NodeQueryList = forwardRef(function NodeQueryList({
   console.debug('NodeQueryList Render');
 
   const nodeListRef = useRef({});
-  const { openItem, toggleItem } = useOpenState();
+  const { openItem, toggleItem } = useSingleOpenState();
 
   const { data } = useQueryQuery({
     xpathExpr: keypath.replace(pathKeyRegex, ''),

@@ -6,7 +6,7 @@ import { useMemoizeWhenFetched, useQueryQuery, fetchStatus,
 import NodeQueryList from 'features/menu/panels/NodeQueryList';
 import CreatableNodeSection from 'features/menu/panels/CreatableNodeSection';
 import NodePane from 'features/menu/panels/NodePane';
-import { useOpenState } from 'features/common/AccordionGroup';
+import { useSingleOpenState } from 'features/common/AccordionGroup';
 
 
 export const label = 'Access Control';
@@ -73,7 +73,7 @@ const NacmRuleLists = memo(function NacmRuleLists({
 }) {
   console.debug('NacmRuleLists Render');
 
-  const { openItem, toggleItem } = useOpenState();
+  const { openItem, toggleItem } = useSingleOpenState();
 
   const ruleListsQuery = useQueryQuery({
     xpathExpr: path,
