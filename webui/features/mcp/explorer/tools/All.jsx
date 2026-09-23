@@ -11,7 +11,7 @@ const CONTEXT_NOTE =
 
 
 const AllTools = memo(function AllTools({
-  isOpen, fade, toggle, onOutput
+  isOpen, fade, toggle
 }) {
   console.debug('AllTools Render');
 
@@ -24,9 +24,8 @@ const AllTools = memo(function AllTools({
         tool={tool}
         readOnly={true}
         showInputs={true}
-        onOutput={onOutput}
       />
-    ), [ onOutput, tools ]);
+    ), [ tools ]);
 
   return (
     <AccordionGroup

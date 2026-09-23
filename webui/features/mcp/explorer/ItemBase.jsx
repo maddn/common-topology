@@ -1,4 +1,5 @@
 import React, { memo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { BTN_CONFIRM } from 'constants/Icons';
 
@@ -7,14 +8,22 @@ import { useMcpRequestMutation } from 'api/mcp';
 import Accordion from 'features/common/Accordion';
 import InlineBtn from 'features/common/buttons/InlineBtn';
 
+import { itemAdded, viewerVisibleSet } from '../mcpSlice';
+
 
 const ItemBase = memo(function ItemBase({
-  title, isOpen, fade, toggle, children, request, disabled, onOutput
+  title, isOpen, fade, toggle, children, request, disabled
 }) {
   console.debug('ItemBase Render');
 
+  const dispatch = useDispatch();
   const [ running, setRunning ] = useState(false);
   const [ executeMcpRequest ] = useMcpRequestMutation();
+
+  const output = value => {
+    dispatch(viewerVisibleSet(true));
+    dispatch(itemAdded(value));
+  };
 
   const run = async (event) => {
     event.stopPropagation();
@@ -25,18 +34,18 @@ const ItemBase = memo(function ItemBase({
 
     try {
       setRunning(true);
-      onOutput({
+      output({
         ...request,
         type: 'mcp-request'
       });
       const result = await executeMcpRequest(request).unwrap();
-      onOutput({
+      output({
         ...request,
         result,
         type: 'mcp-response'
       });
     } catch (error) {
-      onOutput({
+      output({
         ...request,
         error: error.message || error.error || JSON.stringify(error),
         type: 'mcp-response'

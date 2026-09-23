@@ -17,7 +17,7 @@ const READ_TOOL_NAMES = READ_TOOLS.map(({ name }) => name);
 
 
 const ReadTools = memo(function ReadTools({
-  isOpen, fade, toggle, onOutput
+  isOpen, fade, toggle
 }) {
   console.debug('ReadTools Render');
 
@@ -43,7 +43,6 @@ const ReadTools = memo(function ReadTools({
           key={item.name}
           tool={tool}
           toolArguments={{ path: readPath }}
-          onOutput={onOutput}
           disabled={!readPath}
           title={item.title}
         >
@@ -53,7 +52,7 @@ const ReadTools = memo(function ReadTools({
               <span className="content-group__row-value">{readPath}</span>
             </div>}
         </ToolItem>
-    }).filter(Boolean), [ onOutput, path, tools ]);
+    }).filter(Boolean), [ path, tools ]);
 
   return tools.length > 0 ? (
     <AccordionGroup

@@ -31,7 +31,7 @@ export function useResourceTemplates(uriTemplates) {
 
 
 const ResourceItem = memo(function ResourceItem({
-  title, resource, template, templateValues, isOpen, fade, toggle, onOutput
+  title, resource, template, templateValues, isOpen, fade, toggle
 }) {
   console.debug('ResourceItem Render');
 
@@ -58,7 +58,6 @@ const ResourceItem = memo(function ResourceItem({
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
-      onOutput={onOutput}
     >
       {name &&
         <div className="content-group__row">

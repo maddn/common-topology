@@ -12,7 +12,7 @@ const CONTEXT_NOTE =
 
 
 const AllResources = memo(function AllResources({
-  isOpen, fade, toggle, onOutput
+  isOpen, fade, toggle
 }) {
   console.debug('AllResources Render');
 
@@ -23,9 +23,8 @@ const AllResources = memo(function AllResources({
         key={resource.uri}
         resource={resource}
         title={resource.uri}
-        onOutput={onOutput}
       />
-    ), [ onOutput, resources ]);
+    ), [ resources ]);
 
   return (
     <AccordionGroup

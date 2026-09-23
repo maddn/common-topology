@@ -11,7 +11,7 @@ import { useMcpServiceName } from '../../selection';
 
 
 const ServiceTools = memo(function ServiceTools({
-  schema, isOpen, fade, toggle, onOutput
+  schema, isOpen, fade, toggle
 }) {
   console.debug('ServiceTools Render');
 
@@ -52,7 +52,6 @@ const ServiceTools = memo(function ServiceTools({
           tool={redeployTool}
           keyName={keyName}
           service={serviceName}
-          onOutput={onOutput}
         />}
       {undeployTool &&
         <Undeploy
@@ -60,7 +59,6 @@ const ServiceTools = memo(function ServiceTools({
           tool={undeployTool}
           keyName={keyName}
           service={serviceName}
-          onOutput={onOutput}
         />}
       {checkSyncTool &&
         <CheckSync
@@ -68,7 +66,6 @@ const ServiceTools = memo(function ServiceTools({
           tool={checkSyncTool}
           keyName={keyName}
           service={serviceName}
-          onOutput={onOutput}
         />}
       {getModificationsTool &&
         <GetModifications
@@ -76,7 +73,6 @@ const ServiceTools = memo(function ServiceTools({
           tool={getModificationsTool}
           keyName={keyName}
           service={serviceName}
-          onOutput={onOutput}
         />}
     </AccordionGroup>
   ) : null;

@@ -19,7 +19,7 @@ const DEVICE_TOOL_NAMES = DEVICE_TOOLS.map(({ name }) => name);
 
 
 const DeviceTools = memo(function DeviceTools({
-  isOpen, fade, toggle, onOutput
+  isOpen, fade, toggle
 }) {
   console.debug('DeviceTools Render');
 
@@ -43,7 +43,6 @@ const DeviceTools = memo(function DeviceTools({
           key={item.name}
           tool={tool}
           toolArguments={{ device }}
-          onOutput={onOutput}
           disabled={!device}
           title={item.title}
         >
@@ -53,7 +52,7 @@ const DeviceTools = memo(function DeviceTools({
               <span className="content-group__row-value">{device}</span>
             </div>}
         </ToolItem>
-    }).filter(Boolean), [ device, onOutput, tools ]);
+    }).filter(Boolean), [ device, tools ]);
 
   return tools.length > 0 ? (
     <AccordionGroup

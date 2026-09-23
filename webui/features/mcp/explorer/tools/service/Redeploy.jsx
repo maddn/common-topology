@@ -5,7 +5,7 @@ import DryRunControl from './DryRunControl';
 
 
 const Redeploy = memo(function Redeploy({
-  tool, isOpen, fade, toggle, service, keyName, onOutput
+  tool, isOpen, fade, toggle, service, keyName
 }) {
   console.debug('Redeploy Render');
 
@@ -23,7 +23,6 @@ const Redeploy = memo(function Redeploy({
       toggle={toggle}
       tool={tool}
       toolArguments={toolArguments}
-      onOutput={onOutput}
       disabled={!service}
       title="Redeploy"
     >

@@ -5,7 +5,7 @@ import ToolItem from '../Item';
 
 
 const GetModifications = memo(function GetModifications({
-  tool, isOpen, fade, toggle, keyName, service, onOutput
+  tool, isOpen, fade, toggle, keyName, service
 }) {
   console.debug('GetModifications Render');
 
@@ -23,7 +23,6 @@ const GetModifications = memo(function GetModifications({
       toggle={toggle}
       tool={tool}
       toolArguments={toolArguments}
-      onOutput={onOutput}
       disabled={!service}
       title="Get Modifications"
     >

@@ -5,7 +5,7 @@ import ToolItem from '../Item';
 
 
 const CheckSync = memo(function CheckSync({
-  tool, isOpen, fade, toggle, keyName, service, onOutput
+  tool, isOpen, fade, toggle, keyName, service
 }) {
   console.debug('CheckSync Render');
 
@@ -23,7 +23,6 @@ const CheckSync = memo(function CheckSync({
       toggle={toggle}
       tool={tool}
       toolArguments={toolArguments}
-      onOutput={onOutput}
       disabled={!service}
       title="Check-Sync"
     >

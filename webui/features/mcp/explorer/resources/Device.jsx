@@ -16,7 +16,7 @@ const DEVICE_RESOURCE_TEMPLATE_URIS = DEVICE_RESOURCE_TEMPLATES.map(
 
 
 const DeviceResources = memo(function DeviceResources({
-  isOpen, fade, toggle, onOutput
+  isOpen, fade, toggle
 }) {
   console.debug('DeviceResources Render');
 
@@ -42,10 +42,9 @@ const DeviceResources = memo(function DeviceResources({
           title={title}
           template={template}
           templateValues={device && { name: device }}
-          onOutput={onOutput}
         />
       )
-    }).filter(Boolean), [ device, onOutput, templates ]);
+    }).filter(Boolean), [ device, templates ]);
 
   return templates.length > 0 ? (
     <AccordionGroup

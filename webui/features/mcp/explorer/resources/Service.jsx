@@ -26,7 +26,7 @@ const serviceResourceItems = schema => {
 
 
 const ServiceResources = memo(function ServiceResources({
-  schema, isOpen, fade, toggle, onOutput
+  schema, isOpen, fade, toggle
 }) {
   console.debug('ServiceResources Render');
 
@@ -68,11 +68,10 @@ const ServiceResources = memo(function ServiceResources({
           resource={resource}
           template={template}
           templateValues={serviceName && { name: serviceName }}
-          onOutput={onOutput}
         />
       )
     }).filter(Boolean), [
-      onOutput, resourceItems, resources, serviceName, templates
+      resourceItems, resources, serviceName, templates
     ]);
   const hasItems = resources.length > 0 || templates.length > 0;
 

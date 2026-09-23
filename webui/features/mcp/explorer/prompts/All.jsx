@@ -45,7 +45,7 @@ const PROMPT_DEFAULTS = {
 
 
 const AllPrompts = memo(function AllPrompts({
-  isOpen, fade, toggle, onOutput
+  isOpen, fade, toggle
 }) {
   console.debug('AllPrompts Render');
 
@@ -57,9 +57,8 @@ const AllPrompts = memo(function AllPrompts({
         prompt={prompt}
         title={prompt.name}
         defaultArguments={PROMPT_DEFAULTS[prompt.name]}
-        onOutput={onOutput}
       />
-    ), [ onOutput, prompts ]);
+    ), [ prompts ]);
 
   return (
     <AccordionGroup

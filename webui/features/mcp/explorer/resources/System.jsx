@@ -16,7 +16,7 @@ const CONTEXT_NOTE =
 
 
 const SystemResources = memo(function SystemResources({
-  isOpen, fade, toggle, onOutput
+  isOpen, fade, toggle
 }) {
   console.debug('SystemResources Render');
 
@@ -29,10 +29,9 @@ const SystemResources = memo(function SystemResources({
           key={path}
           title={title}
           resource={resource}
-          onOutput={onOutput}
         />
       )
-    }).filter(Boolean), [ onOutput, resources ]);
+    }).filter(Boolean), [ resources ]);
 
   return resources.length > 0 ? (
     <AccordionGroup

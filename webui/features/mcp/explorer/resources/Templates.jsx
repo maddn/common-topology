@@ -11,7 +11,7 @@ const CONTEXT_NOTE =
 
 
 const ResourceTemplates = memo(function ResourceTemplates({
-  isOpen, fade, toggle, onOutput
+  isOpen, fade, toggle
 }) {
   console.debug('ResourceTemplates Render');
 
@@ -22,9 +22,8 @@ const ResourceTemplates = memo(function ResourceTemplates({
         key={template.uriTemplate}
         template={template}
         title={template.uriTemplate}
-        onOutput={onOutput}
       />
-    ), [ onOutput, templates ]);
+    ), [ templates ]);
 
   return (
     <AccordionGroup

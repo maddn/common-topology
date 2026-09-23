@@ -31,10 +31,8 @@ import AllResources from './resources/All';
 import ResourceTemplates from './resources/Templates';
 import Prompts from './prompts/All';
 
-import {
-  getMcpHasViewer, getMcpServerStatus, getMcpVisible,
-  itemAdded, viewerVisibleSet, viewerToggled
-} from '../mcpSlice';
+import { getMcpHasViewer, getMcpServerStatus, getMcpVisible,
+         viewerToggled } from '../mcpSlice';
 
 
 function useFetchStatus() {
@@ -101,15 +99,6 @@ const McpExplorer = memo(function McpExplorer({
   const toggleViewer = useCallback(() => {
     dispatch(viewerToggled());
   }, [ dispatch ]);
-  const output = useCallback(value => {
-    dispatch(viewerVisibleSet(true));
-    dispatch(itemAdded(value));
-  }, [ dispatch ]);
-  const groupProps = useCallback(group => ({
-    ...openStateForItem(group),
-    onOutput: output
-  }), [ output, openStateForItem ]);
-
   const viewSelector = (view, title) => (
     <Accordion
       level="0"
@@ -158,8 +147,8 @@ const McpExplorer = memo(function McpExplorer({
         isContainerOnly={true}
       >
         <SidebarSection title="Default Restricted Tools">
-          <ReadTools {...groupProps('tools-read')} />
-          <DeviceTools {...groupProps('tools-device')} />
+          <ReadTools {...openStateForItem('tools-read')} />
+          <DeviceTools {...openStateForItem('tools-device')} />
           <div className="content-group content-group--empty-message">
             <div className="content-group__row">
               <span className="content-group__row-value">
@@ -171,8 +160,8 @@ const McpExplorer = memo(function McpExplorer({
         </SidebarSection>
 
         <SidebarSection title="Default Restricted Resources">
-          <DeviceResources {...groupProps('resources-device')} />
-          <SystemResources {...groupProps('resources-system')} />
+          <DeviceResources {...openStateForItem('resources-device')} />
+          <SystemResources {...openStateForItem('resources-system')} />
           <div className="content-group content-group--empty-message">
             <div className="content-group__row">
               <span className="content-group__row-value">
@@ -188,7 +177,7 @@ const McpExplorer = memo(function McpExplorer({
             <ServiceTools
               key={schema.path}
               schema={schema}
-              {...groupProps(`tools-service-${schema.path}`)}
+              {...openStateForItem(`tools-service-${schema.path}`)}
             />)}
           <div className="content-group content-group--empty-message">
             <div className="content-group__row">
@@ -205,7 +194,7 @@ const McpExplorer = memo(function McpExplorer({
             <ServiceResources
               key={schema.path}
               schema={schema}
-              {...groupProps(`resources-service-${schema.path}`)}
+              {...openStateForItem(`resources-service-${schema.path}`)}
             />)}
           <div className="content-group content-group--empty-message">
             <div className="content-group__row">
@@ -224,10 +213,10 @@ const McpExplorer = memo(function McpExplorer({
         isContainerOnly={true}
       >
         <SidebarSection title="All Items">
-          <AllTools {...groupProps('all-tools')} />
-          <ResourceTemplates {...groupProps('all-resource-templates')} />
-          <AllResources {...groupProps('all-resources')} />
-          <Prompts {...groupProps('prompts')} />
+          <AllTools {...openStateForItem('all-tools')} />
+          <ResourceTemplates {...openStateForItem('all-resource-templates')} />
+          <AllResources {...openStateForItem('all-resources')} />
+          <Prompts {...openStateForItem('prompts')} />
         </SidebarSection>
       </Accordion>
 

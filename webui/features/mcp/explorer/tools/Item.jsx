@@ -25,7 +25,7 @@ export function useTool(name) {
 
 
 const ToolItem = memo(function ToolItem({
-  title, tool, isOpen, fade, toggle, onOutput, children,
+  title, tool, isOpen, fade, toggle, children,
   toolArguments = {}, readOnly, disabled, showInputs = false
 }) {
   console.debug('ToolItem Render');
@@ -53,7 +53,6 @@ const ToolItem = memo(function ToolItem({
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
-      onOutput={onOutput}
       disabled={disabled}
     >
         {displayTitle !== name &&

@@ -6,7 +6,7 @@ import ItemBase from '../ItemBase';
 
 
 const PromptItem = memo(function PromptItem({
-  title, prompt, isOpen, fade, toggle, onOutput, defaultArguments = {}
+  title, prompt, isOpen, fade, toggle, defaultArguments = {}
 }) {
   console.debug('PromptItem Render');
 
@@ -31,7 +31,6 @@ const PromptItem = memo(function PromptItem({
       isOpen={isOpen}
       fade={fade}
       toggle={toggle}
-      onOutput={onOutput}
     >
       <Description description={description} />
       <InputList inputs={inputs} />

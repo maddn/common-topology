@@ -5,7 +5,7 @@ import DryRunControl from './DryRunControl';
 
 
 const Undeploy = memo(function Undeploy({
-  tool, isOpen, fade, toggle, keyName, service, onOutput
+  tool, isOpen, fade, toggle, keyName, service
 }) {
   console.debug('Undeploy Render');
 
@@ -23,7 +23,6 @@ const Undeploy = memo(function Undeploy({
       toggle={toggle}
       tool={tool}
       toolArguments={toolArguments}
-      onOutput={onOutput}
       disabled={!service}
       title="Undeploy"
     >
