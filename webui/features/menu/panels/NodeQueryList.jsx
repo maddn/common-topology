@@ -16,12 +16,11 @@ const removeEmptyFields = data => Object.fromEntries(Object.entries(data)
 const NodeQueryList = forwardRef(function NodeQueryList({
   label, keypath, noTitle,
   baseSelect = [], labelSelect, isLeafList, selector,
-  newItemDefaults, newItemDragType, defaultsPath, newItemDragIcon,
   getTitle, disableCreate, disableGoTo, calculateName, ...rest
 }, ref) {
   console.debug('NodeQueryList Render');
 
-  const nodeListRef = useRef({});
+  const creatableNodeSectionRef = useRef({});
   const { openItem, toggleItem } = useSingleOpenState();
 
   const { data } = useQueryQuery({
@@ -32,13 +31,13 @@ const NodeQueryList = forwardRef(function NodeQueryList({
 
   useImperativeHandle(ref, () => ({
     openNewItem(defaults) {
-      nodeListRef.current.openNewItem(defaults);
+      creatableNodeSectionRef.current.openNewItem(defaults);
     },
     async createNewItem(name) {
       const key = typeof calculateName === 'function'
         ? calculateName(name, data)
         : name;
-      await nodeListRef.current.createNewItem(key);
+      await creatableNodeSectionRef.current.createNewItem(key);
       return key;
     }
   }), [ calculateName, data ]);
@@ -49,11 +48,7 @@ const NodeQueryList = forwardRef(function NodeQueryList({
       keypath={keypath}
       label={label}
       disableCreate={disableCreate}
-      newItemDefaults={newItemDefaults}
-      newItemDragType={newItemDragType}
-      defaultsPath={defaultsPath}
-      newItemDragIcon={newItemDragIcon}
-      ref={nodeListRef}
+      ref={creatableNodeSectionRef}
       { ...rest }
     >
       {data?.map(({ name, keypath, ...item }) =>

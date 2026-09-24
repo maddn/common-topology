@@ -80,7 +80,7 @@ const CreatableNodeSection = forwardRef(function CreatableNodeSection({
     newItemDragIcon && connectPngDragPreview(renderToStaticMarkup(
       <IconSvg type={newItemDragIcon} size={iconSize} />),
       iconSize, dragPreview, true);
-  }, [ iconSize, newItemDragIcon ]);
+  }, [ dragPreview, iconSize, newItemDragIcon ]);
 
   const defaults = itemDefaults ?? newItemDefaults;
 

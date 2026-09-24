@@ -15,14 +15,9 @@ export const DROP_BEHAVIOUR_OPEN_NEW_ITEM = 1;
 export const DROP_BEHAVIOUR_GOTO = 2;
 
 function DroppableNodeQueryList({
-  label, keypath, noTitle,
-  baseSelect, labelSelect, isLeafList, selector,
   allowDrop, accept,
   dropBehaviour = DROP_BEHAVIOUR_CREATE_ONLY,
-  calculateName, newItemDefaults,
-  newItemDragType, defaultsPath, newItemDragIcon,
-  getTitle, disableCreate, disableGoTo,
-  ...rest
+  keypath, dropItemDefaults, ...props
 }) {
   console.debug('DroppableNodeQueryList Render');
   const dispatch = useDispatch();
@@ -39,9 +34,9 @@ function DroppableNodeQueryList({
         }
       } else {
         nodeListRef.current.openNewItem(
-          typeof newItemDefaults === 'function'
-            ? newItemDefaults(name)
-            : newItemDefaults);
+          typeof dropItemDefaults === 'function'
+            ? dropItemDefaults(name)
+            : dropItemDefaults);
       }
     },
     canDrop: ({ type }) => {
@@ -52,28 +47,14 @@ function DroppableNodeQueryList({
       canDrop: monitor.canDrop()
     })
   }), [ accept, allowDrop, dispatch, dropBehaviour, keypath,
-        newItemDefaults ]);
+        dropItemDefaults ]);
 
   return (
     <div className="drop-target__wrapper" ref={drop}>
       <NodeQueryList
         keypath={keypath}
-        label={label}
-        noTitle={noTitle}
-        baseSelect={baseSelect}
-        labelSelect={labelSelect}
-        isLeafList={isLeafList}
-        selector={selector}
-        disableCreate={disableCreate}
-        newItemDefaults={newItemDefaults}
-        newItemDragType={newItemDragType}
-        defaultsPath={defaultsPath}
-        newItemDragIcon={newItemDragIcon}
-        getTitle={getTitle}
-        disableGoTo={disableGoTo}
-        calculateName={calculateName}
         ref={nodeListRef}
-        { ...rest }
+        { ...props }
       />
       <div className="drop-target">
         <div className={classNames('drop-target__overlay', {
