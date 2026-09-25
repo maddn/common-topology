@@ -23,43 +23,50 @@ const processCometUpdates = (results, dispatch, getState) => {
   const state = getState();
   const queries = jsonRpcApi.util.selectCachedArgsForQuery(state, 'query');
 
+  // This matches the changed leaf to direct leaves selected in queries.
+  // Nested selected leaves will not be matched.
   results.forEach(({ message }) => {
     message.changes?.forEach(({ keypath, op, value }) => {
       if (op === 'value_set') {
         const [ , itemKeypath, leaf ] = keypath.match(/(.*)\/(.*)/);
         const queryKey = cachePathFromKeypath(itemKeypath);
-        const query = queries.find(({ xpathExpr }) =>
-          cachePathFromXpath(xpathExpr) === queryKey
-        );
-        if (query?.selection.includes(leaf)) {
-          const { data } = jsonRpcApi.endpoints['query'].select(queryKey)(state);
+        queries.filter(({ xpathExpr, selection }) =>
+          cachePathFromXpath(xpathExpr) === queryKey &&
+          selection.includes(leaf)
+        ).forEach(query => {
+          const { data = [] } = jsonRpcApi.endpoints.query.select(query)(state);
           if (data.find(({ keypath }) => keypath === itemKeypath)) {
             if (dispatch) {
-              dispatch(updateQueryData(itemKeypath, leaf, value));
+              dispatch(updateQueryData(
+                itemKeypath, leaf, value, query.queryKey
+              ));
             }
           } else {
             invalidateTags.add(queryKey);
           }
-        }
+        });
       } else if (op === 'created') {
         const queryKey = cachePathFromKeypath(keypath);
-        const query = queries.find(({ xpathExpr }) =>
+        queries.filter(({ xpathExpr }) =>
           cachePathFromXpath(xpathExpr) === queryKey
-        );
-        if (query) {
-          const { data } = jsonRpcApi.endpoints['query'].select(queryKey)(state);
+        ).forEach(query => {
+          const { data = [] } = jsonRpcApi.endpoints.query.select(query)(state);
           if (!data.find(item => item.keypath === keypath)) {
             invalidateTags.add(queryKey);
           }
-        }
+        });
       } else if (op === 'deleted') {
-        queries.filter(({ xpathExpr }) => {
+        queries.forEach(query => {
+          const { xpathExpr } = query;
           const queryKey = cachePathFromXpath(xpathExpr);
           if (queryKey.startsWith(cachePathFromKeypath(keypath))) {
-            const { data } = jsonRpcApi.endpoints['query'].select(queryKey)(state);
+            const { data = [] } =
+              jsonRpcApi.endpoints.query.select(query)(state);
             data.forEach(({ keypath: itemKeypath }) => {
               if (itemKeypath.startsWith(keypath)) {
-                dispatch(updateQueryData(itemKeypath));
+                dispatch(updateQueryData(
+                  itemKeypath, undefined, undefined, query.queryKey
+                ));
               }
             });
           }
