@@ -12,6 +12,8 @@ const defaultSelection = {
 
 export const QuerySelectionContext = createContext(defaultSelection);
 
+// Projects can extend the common topology device and connection queries with
+// leaves used for project-specific status, tooltips, or link metrics.
 export function QuerySelectionProvider({
     devices = {}, connections = {}, children }) {
   const value = {

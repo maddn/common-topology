@@ -68,24 +68,6 @@ export function useQueryState(path, queryKey) {
   return fetchStatus(query.useQueryState({ xpathExpr: path, queryKey }));
 }
 
-export function createItemsSelectorWithArray(keyValues) {
-  return createSelector(
-    res => res.data,
-    res => res.isFetching,
-    res => res.isSuccess,
-    res => res.isError,
-    (raw, isFetching, isSuccess, isError) => ({
-      data: raw?.reduce((accumulator, item) => {
-        //const { [key]: itemKey, ...data } = item;
-        if (keyValues.every(([ key, value ]) => item[key] === value)) {
-          accumulator.push(item);
-        }
-        return accumulator;
-      }, []), isFetching, isSuccess, isError
-    })
-  );
-}
-
 export function createItemsSelector(key, value, sortKey) {
   const valueSet = Array.isArray(value) && new Set(value);
 

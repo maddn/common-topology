@@ -130,12 +130,12 @@ const Connection = memo(function Connection({
 
   const deleteConn = useCallback(() => {
     deletePath({ keypath });
-  }, []);
+  }, [ deletePath, keypath ]);
 
   const goToConn = useCallback((event) => {
     event.stopPropagation();
     dispatch(stopThenGoToUrl(configurationEditorUrl(keypath)));
-  }, []);
+  }, [ dispatch, keypath ]);
 
   const { x: x1, y: y1, ...aEndIcon } = useIconPosition(aEndDevice);
   const { x: x2, y: y2, ...zEndIcon } = useIconPosition(zEndDevice);
