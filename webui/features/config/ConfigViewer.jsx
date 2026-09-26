@@ -22,7 +22,8 @@ const getNsoDeviceEditorKeypath = (device) =>
 
 function ConfigViewer({
     ConfigHeaderActions = DefaultConfigHeaderActions,
-    getDeviceEditorKeypath = getNsoDeviceEditorKeypath }) {
+    getDeviceEditorKeypath = getNsoDeviceEditorKeypath,
+    showOutOfBandPolicies = false }) {
   console.debug('Config Viewer Render');
   const expandedIcons = useSelector((state) => getExpandedIcons(state));
   const hidden = useSelector((state) => getRightSidebar(state) !== 'config');
@@ -35,7 +36,7 @@ function ConfigViewer({
   return (
     <SidebarPane
       hidden={hidden}
-      footer={<OutOfBandPolicies />}
+      footer={showOutOfBandPolicies && <OutOfBandPolicies />}
     >
       <SidebarSection title="Config Viewer">
         {devices && platforms && expandedIcons && expandedIcons.map(
