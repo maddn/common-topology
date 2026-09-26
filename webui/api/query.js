@@ -163,9 +163,10 @@ export const queryApi = jsonRpcApi.injectEndpoints({
           selection
         }
       }),
-      providesTags: (_, __, { xpathExpr, tag }) => (
-        [ { type: 'data', id: cachePathFromXpath(xpathExpr) } ]
-      ),
+      providesTags: (_, __, { xpathExpr, tag }) => [
+        { type: 'data', id: cachePathFromXpath(xpathExpr) },
+        ...(tag ? [ { type: 'data', id: tag } ] : [])
+      ],
       transformResponse: (response, _, { selection, keys, isLeafList }) => (
         transformQueryResponse(selection, response, keys, isLeafList)
       ),

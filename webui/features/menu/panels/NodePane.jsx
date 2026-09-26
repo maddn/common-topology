@@ -15,7 +15,7 @@ import { useDeletePathMutation } from 'api/data';
 
 const NodePane = memo(function NodePane({
   title, label, keypath, level, isOpen, fade, nodeToggled,
-  underscore, queryKey, disableDelete,
+  underscore, queryKey, queryTag, disableDelete,
   disableGoTo, extraButtons, subHeader, children, ...rest
 }) {
   console.debug('NodePane Render');
@@ -33,7 +33,7 @@ const NodePane = memo(function NodePane({
   const [ deletePath ] = useDeletePathMutation();
   const deleteNode = async (event) => {
     event.stopPropagation();
-    await deletePath({ keypath, queryKey });
+    await deletePath({ keypath, queryKey, queryTag });
     if (isOpen) { toggle(); }
   };
   const headerTitle = <Fragment>{underscore ?

@@ -83,7 +83,9 @@ export const dataApi = jsonRpcApi.injectEndpoints({
           path: keypath
         }
       }),
-      invalidatesTags: [ 'changes' ],
+      invalidatesTags: (_, __, { queryTag }) => queryTag
+        ? [ 'changes', { type: 'data', id: queryTag } ]
+        : [ 'changes' ],
       async onQueryStarted({ keypath, queryKey }, { dispatch, queryFulfilled }) {
         await queryFulfilled;
         dispatch(updateQueryData(keypath, undefined, undefined, queryKey));
