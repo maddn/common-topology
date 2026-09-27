@@ -20,9 +20,12 @@ const NodePane = memo(function NodePane({
 }) {
   console.debug('NodePane Render');
 
+  const canToggle = (level ? Number(level) : 1) !== 2 ||
+    Object.keys(rest).length > 0;
+
   const toggle = useCallback(() => {
-    nodeToggled && nodeToggled(keypath);
-  }, [ keypath, nodeToggled ]);
+    nodeToggled && canToggle && nodeToggled(keypath);
+  }, [ canToggle, keypath, nodeToggled ]);
 
   const dispatch = useDispatch();
   const goToNode = (event) => {
