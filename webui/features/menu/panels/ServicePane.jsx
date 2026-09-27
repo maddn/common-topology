@@ -64,12 +64,16 @@ function ServicePane({
   }, [ dispatch, controlledToggle, keypath, serviceIsOpen,
     parentServiceKeypath, serviceKeypath ]);
 
-  useEffect(() => serviceIsOpen && dispatch(
-    highlightedIconsUpdated({ highlightedIcons })
-  ), [ highlightedIcons ]);
-  useEffect(() => serviceIsOpen && configReferences && dispatch(
-    setConfigReferences(configReferences)
-  ), [ serviceIsOpen, configReferences ]);
+  useEffect(() => {
+    if (serviceIsOpen) {
+      dispatch(highlightedIconsUpdated({ highlightedIcons }));
+    }
+  }, [ dispatch, highlightedIcons, serviceIsOpen ]);
+  useEffect(() => {
+    if (serviceIsOpen && configReferences) {
+      dispatch(setConfigReferences(configReferences));
+    }
+  }, [ dispatch, serviceIsOpen, configReferences ]);
 
   const [ action ] = useActionMutation();
   const redeploy = useCallback(async (event) => {
