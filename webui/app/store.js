@@ -44,8 +44,7 @@ export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: {
-      ignoredActions: ['item-dragged',
-        FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+      ignoredActions: [ FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER ]
     },
     immutableCheck: false
   }).prepend(listenerMiddleware.middleware)
