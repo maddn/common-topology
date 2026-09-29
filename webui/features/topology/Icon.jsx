@@ -1,6 +1,6 @@
 import React from 'react';
 import { Fragment, useCallback,
-         useContext, useEffect, useMemo} from 'react';
+         useContext, useEffect, useMemo, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { useDrop, useDrag } from 'react-dnd';
@@ -247,7 +247,7 @@ export function useIconPositionCalculator() {
 
 function Icon({ name, getDeviceStatus }) {
   console.debug('Icon Render');
-  const mouseDownPos = {};
+  const mouseDownPos = useRef();
 
   const { devices: devicesQuery } = useQuerySelection();
   const dispatch = useDispatch();
@@ -275,12 +275,26 @@ function Icon({ name, getDeviceStatus }) {
   const expanded = useIsExpanded(name);
 
   const connectedDevices = useConnectedDevices(name);
+  const status = getDeviceStatus({
+    device,
+    platform
+  });
+
+  const moveIcon = useCallback((x, y) => {
+    const path = zoomedContainer
+      ? `${keypath}/icon/zoomed{${container}}`
+      : keypath;
+    const coordNode = zoomedContainer ? 'coord/' : 'icon/coord/';
+    const coordValue = pxToPc({ x, y }, container);
+    setValue({ keypath: path, leaf: `${coordNode}x`, value: coordValue.x });
+    setValue({ keypath: path, leaf: `${coordNode}y`, value: coordValue.y});
+  }, [ container, keypath, pxToPc, setValue, zoomedContainer ]);
 
   const [, deviceDrag, deviceDragPreview] = useDrag(() => ({
     type: DEVICE,
     item: { name, type: iconType },
     canDrag: !editMode
-  }));
+  }), [ editMode, iconType, name ]);
 
   const [ collectedDragProps, iconDrag, iconDragPreview ] = useDrag(() => ({
     type: ICON,
@@ -290,7 +304,8 @@ function Icon({ name, getDeviceStatus }) {
             <IconSvg type={iconType} status={status} size={size} />
       ))}`;
       const item = {
-        icon: { name, img, imgReady: false, container}, x, y,  mouseDownPos
+        icon: { name, img, imgReady: false, container},
+        x, y, mouseDownPos: mouseDownPos.current
       };
       img.onload = () => { item.icon.imgReady = true; };
       requestAnimationFrame(
@@ -299,12 +314,16 @@ function Icon({ name, getDeviceStatus }) {
     },
     end: (item, monitor) => {
       const offset = monitor.getDifferenceFromInitialOffset();
+      mouseDownPos.current = undefined;
       dispatch(itemDragged(undefined));
       moveIcon(item.x + offset.x, item.y + offset.y);
     },
     canDrag: editMode,
     collect: (monitor) => ({ isDragging: monitor.isDragging() })
-  }), [ mouseDownPos ]);
+  }), [
+    container, dispatch, editMode, iconType, moveIcon,
+    name, size, status, x, y
+  ]);
 
   const [ collectedDropProps, drop ] = useDrop(() => ({
     accept: INTERFACE,
@@ -347,7 +366,10 @@ function Icon({ name, getDeviceStatus }) {
     collect: (monitor) => ({
       canDrop: monitor.canDrop()
     })
-  }), [ connectedDevices ]);
+  }), [
+    connectedDevices, create, dispatch, name, openTopology,
+    openTopologyName, renameListEntry
+  ]);
 
   const handleOnClick = () => {
     if (editMode && name ) {
@@ -357,47 +379,37 @@ function Icon({ name, getDeviceStatus }) {
     }
   };
 
-  const moveIcon = (x, y) => {
-    const path = zoomedContainer ? `${keypath}/icon/zoomed{${container}}` : keypath;
-    const coordNode = zoomedContainer ? 'coord/' : 'icon/coord/';
-    const coordValue = pxToPc({ x, y }, container);
-    setValue({ keypath: path, leaf: `${coordNode}x`, value: coordValue.x });
-    setValue({ keypath: path, leaf: `${coordNode}y`, value: coordValue.y});
-  };
-
   const handleMouseDown = event => {
-    mouseDownPos.x = event.clientX;
-    mouseDownPos.y = event.clientY;
+    mouseDownPos.current = {
+      x: event.clientX,
+      y: event.clientY
+    };
   };
 
   const { canDrop } = collectedDropProps;
 
   useEffect(() => {
     dispatch(iconHovered(canDrop && name));
-  }, [ canDrop ]);
+  }, [ canDrop, dispatch, name ]);
 
   useEffect(() => {
     iconDragPreview(getEmptyImage(), {});
-  });
+  }, [ iconDragPreview ]);
 
   const { isDragging } = collectedDragProps;
 
-  const getStatus = () => getDeviceStatus({
-    device,
-    platform
-  });
-
-  let status = getStatus();
   const position = { x, y, pcX, pcY };
   const outlineSize = expanded ? Math.round(size * ICON_OUTLINE_RATIO) : size;
   const highlightSize = size * 2;
 
-  // The drag preview is not captured correctly on Safari,
-  // so generate PNG image and use that
-  isSafari && connectPngDragPreview(renderToStaticMarkup(
-    <IconSvg type={iconType} status={status} size={size} />),
-    size, deviceDragPreview, false
-  );
+  useEffect(() => {
+    // The drag preview is not captured correctly on Safari,
+    // so generate PNG image and use that.
+    isSafari && connectPngDragPreview(renderToStaticMarkup(
+      <IconSvg type={iconType} status={status} size={size} />),
+      size, deviceDragPreview, false
+    );
+  }, [ deviceDragPreview, iconType, size, status ]);
 
   return (
     <Fragment>

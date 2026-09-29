@@ -1,7 +1,7 @@
 import React from 'react';
-import { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { DragSource } from 'react-dnd';
+import { memo, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { useDrag } from 'react-dnd';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { INTERFACE } from 'constants/ItemTypes';
@@ -13,57 +13,53 @@ import { itemDragged, connectionSelected, iconSelected } from './topologySlice';
 import { isSafari, connectPngDragPreview } from './DragLayerCanvas';
 
 
-const mapDispatchToProps = { itemDragged, connectionSelected, iconSelected };
+const Interface = memo(function Interface({
+  keypath, aEndDevice, zEndDevice, fromDevice, x, y,
+  onClick, pcX, pcY, type, size, active, disabled, tooltip
+}) {
+  console.debug('Interface Render');
 
-const interfaceSource = {
-  beginDrag: ({ keypath, aEndDevice, zEndDevice, fromDevice, x, y,
-    itemDragged, connectionSelected }, monitor, { mouseDownPos }) => {
-    const item = {
-      interface: { keypath, aEndDevice, zEndDevice, fromDevice },
-      x, y, mouseDownPos
-    };
-    requestAnimationFrame(() => {
-      itemDragged({ fromDevice, aEndDevice, zEndDevice });
-      connectionSelected(undefined);
-    });
-    return item;
-  },
+  const dispatch = useDispatch();
+  const mouseDownPos = useRef();
 
-  endDrag: ({ aEndDevice, zEndDevice, fromDevice,
-    itemDragged, iconSelected, connectionSelected }, monitor) => {
-    itemDragged(undefined);
-    if (!monitor.didDrop()) {
-      (aEndDevice || zEndDevice)
-        ? connectionSelected({
-            aEndDevice: aEndDevice || fromDevice,
-            zEndDevice: zEndDevice || fromDevice })
-        : iconSelected(fromDevice);
-    }
-  },
+  const [ , drag, dragPreview ] = useDrag(() => ({
+    type: INTERFACE,
+    item: () => {
+      const item = {
+        interface: { keypath, aEndDevice, zEndDevice, fromDevice },
+        x, y, mouseDownPos: mouseDownPos.current
+      };
+      requestAnimationFrame(() => {
+        dispatch(itemDragged({ fromDevice, aEndDevice, zEndDevice }));
+        dispatch(connectionSelected(undefined));
+      });
+      return item;
+    },
+    end: (_item, monitor) => {
+      mouseDownPos.current = undefined;
+      dispatch(itemDragged(undefined));
+      if (!monitor.didDrop()) {
+        (aEndDevice || zEndDevice)
+          ? dispatch(connectionSelected({
+              aEndDevice: aEndDevice || fromDevice,
+              zEndDevice: zEndDevice || fromDevice }))
+          : dispatch(iconSelected(fromDevice));
+      }
+    },
+    canDrag: () => active && !disabled
+  }), [
+    active, aEndDevice, disabled, dispatch, fromDevice,
+    keypath, x, y, zEndDevice
+  ]);
 
-  canDrag: ({ active, disabled }) => (active && !disabled)
-};
-
-
-@DragSource(INTERFACE, interfaceSource, connect => ({
-  connectDragSource: connect.dragSource(),
-  connectDragPreview: connect.dragPreview()
-}))
-class Interface extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.mouseDownPos = {};
-  }
-
-  handleMouseDown = event => {
-    this.mouseDownPos = {
+  const handleMouseDown = event => {
+    mouseDownPos.current = {
       x: event.clientX,
       y: event.clientY
     };
   };
 
-  componentDidMount() {
-    const { connectDragPreview, size } = this.props;
+  useEffect(() => {
     const actualSize = size * 2;
 
     // The drag preview is not captured correctly on Safari,
@@ -81,29 +77,23 @@ class Interface extends PureComponent {
           cx={actualSize/2} cy={actualSize/2} r={actualSize/2}
         />
       </svg>),
-      actualSize, connectDragPreview, false
+      actualSize, dragPreview, false
     );
-  }
+  }, [ dragPreview, size ]);
 
-  render() {
-    console.debug('Interface Render');
-    const { connectDragSource, onClick, pcX, pcY,
-            type, size, active, tooltip } = this.props;
+  return (
+    <RoundButton
+      ref={drag}
+      onClick={onClick}
+      onMouseDown={handleMouseDown}
+      pcX={pcX}
+      pcY={pcY}
+      type={type}
+      size={size}
+      active={active}
+      tooltip={tooltip}
+    />
+  );
+});
 
-    return (
-      <RoundButton
-        ref={instance => connectDragSource(instance)}
-        onClick={onClick}
-        onMouseDown={this.handleMouseDown}
-        pcX={pcX}
-        pcY={pcY}
-        type={type}
-        size={size}
-        active={active}
-        tooltip={tooltip}
-      />
-    );
-  }
-}
-
-export default connect(null, mapDispatchToProps)(Interface);
+export default Interface;

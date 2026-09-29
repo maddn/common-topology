@@ -74,7 +74,7 @@ const CreatableNodeSection = forwardRef(function CreatableNodeSection({
       }
     },
     canDrag: newItemDragType !== undefined
-  }));
+  }), [ dispatch, newItemDragType, openNewItem ]);
 
   useEffect(() => {
     newItemDragIcon && connectPngDragPreview(renderToStaticMarkup(
