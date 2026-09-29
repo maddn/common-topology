@@ -1,7 +1,7 @@
 import React from 'react';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import ReactResizeDetector from 'react-resize-detector';
+import { useResizeDetector } from 'react-resize-detector';
 
 import Container from './Container';
 import Connection, { useTopologyConnectionsQuery } from './Connection';
@@ -32,12 +32,25 @@ const TopologyBody = React.memo(function TopologyBody ({ getDeviceStatus }) {
   const connections = useTopologyConnectionsQuery();
   const platforms = usePlatformsQuery();
 
-  const resize = () => {
+  const resize = useCallback(() => {
     console.debug('Topology Resize');
+    if (!ref.current) {
+      return;
+    }
     const { offsetWidth: width, offsetHeight: height } = ref.current;
     const { left, top } = ref.current.getBoundingClientRect();
     dispatch(dimensionsChanged({ width, height, left, top }));
-  };
+  }, [ dispatch ]);
+
+  useResizeDetector({
+    targetRef: ref,
+    onResize: resize,
+    handleWidth: true,
+    handleHeight: true,
+    refreshMode: 'debounce',
+    refreshRate: 500,
+    disableRerender: true
+  });
 
   return (
     <LayoutContextProvider>
@@ -55,27 +68,22 @@ const TopologyBody = React.memo(function TopologyBody ({ getDeviceStatus }) {
         </div>
         <div className="component__layer topology__body-placeholder">
           <div className="topology__body" ref={ref}>
-            <ReactResizeDetector handleWidth handleHeight
-              onResize={resize}
-              refreshMode="debounce"
-              refreshRate={500}
-            />
-              {devices.data && connections.data?.map(
-                ({ keypath, aEndDevice, zEndDevice, ...connection }) =>
-                  <Connection
-                    key={`${aEndDevice} - ${zEndDevice}`}
-                    keypath={keypath}
-                    aEndDevice={aEndDevice}
-                    zEndDevice={zEndDevice}
-                    {...connection}
-                  />
-              )}
-              {devices.data?.map(({ name }) =>
-                  <Icon key={name} name={name}
-                    getDeviceStatus={getDeviceStatus} />
-              )}
-              <DragLayerCanvas canvasRef={canvasRef} />
-              <CustomDragLayer canvasRef={canvasRef} />
+            {devices.data && connections.data?.map(
+              ({ keypath, aEndDevice, zEndDevice, ...connection }) =>
+                <Connection
+                  key={`${aEndDevice} - ${zEndDevice}`}
+                  keypath={keypath}
+                  aEndDevice={aEndDevice}
+                  zEndDevice={zEndDevice}
+                  {...connection}
+                />
+            )}
+            {devices.data?.map(({ name }) =>
+                <Icon key={name} name={name}
+                  getDeviceStatus={getDeviceStatus} />
+            )}
+            <DragLayerCanvas canvasRef={canvasRef} />
+            <CustomDragLayer canvasRef={canvasRef} />
           </div>
         </div>
       </div>

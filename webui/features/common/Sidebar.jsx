@@ -1,81 +1,75 @@
 import './common.css';
 
 import React from 'react';
-import { Component, createRef } from 'react';
-import ReactResizeDetector from 'react-resize-detector';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { useResizeDetector } from 'react-resize-detector';
 
 
-class Sidebar extends Component {
-  constructor(props) {
-    super(props);
-    this.ref = createRef();
-    this.innerRef = createRef();
-    this.resizeFrame = null;
-  }
+function Sidebar({ children }) {
+  console.debug('Sidebar Render');
 
-  componentDidMount() {
-    window.addEventListener('resize', this.handleWindowResize);
-    this.resize();
-  }
+  const ref = useRef();
+  const innerRef = useRef();
+  const resizeFrame = useRef();
 
-  componentDidUpdate() {
-    this.resize();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleWindowResize);
-    if (this.resizeFrame) {
-      window.cancelAnimationFrame(this.resizeFrame);
-    }
-  }
-
-  handleWindowResize = () => {
-    this.scheduleResize();
-  };
-
-  scheduleResize = () => {
-    if (this.resizeFrame) {
-      window.cancelAnimationFrame(this.resizeFrame);
-    }
-
-    this.resizeFrame = window.requestAnimationFrame(() => {
-      this.resizeFrame = null;
-      this.resize();
-    });
-  };
-
-  resize = () => {
+  const resize = useCallback(() => {
     console.debug('Sidebar resize');
-    if (!this.ref.current || !this.innerRef.current) {
+    if (!ref.current || !innerRef.current) {
       return;
     }
 
-    const top = this.ref.current.clientHeight -
-                this.innerRef.current.scrollHeight;
+    const top = ref.current.clientHeight -
+                innerRef.current.scrollHeight;
 
-    this.ref.current.style.top = top > 0 ? '0px' : `${top}px`;
-  };
+    ref.current.style.top = top > 0 ? '0px' : `${top}px`;
+  }, []);
 
-  render() {
-    console.debug('Sidebar Render');
-    const { children } = this.props;
+  const scheduleResize = useCallback(() => {
+    if (resizeFrame.current) {
+      window.cancelAnimationFrame(resizeFrame.current);
+    }
 
-    return (
-      <div ref={this.ref} className="sidebar">
-        <div
-          ref={this.innerRef}
-          className="sidebar__inner"
-        >
-          <ReactResizeDetector handleHeight
-            onResize={this.resize}
-            refreshMode="debounce"
-            refreshRate={500}
-          />
-          {children}
-        </div>
+    resizeFrame.current = window.requestAnimationFrame(() => {
+      resizeFrame.current = undefined;
+      resize();
+    });
+  }, [ resize ]);
+
+  useResizeDetector({
+    targetRef: innerRef,
+    onResize: resize,
+    handleWidth: false,
+    handleHeight: true,
+    refreshMode: 'debounce',
+    refreshRate: 500,
+    disableRerender: true
+  });
+
+  useEffect(() => {
+    window.addEventListener('resize', scheduleResize);
+
+    return () => {
+      window.removeEventListener('resize', scheduleResize);
+      if (resizeFrame.current) {
+        window.cancelAnimationFrame(resizeFrame.current);
+      }
+    };
+  }, [ scheduleResize ]);
+
+  useLayoutEffect(() => {
+    resize();
+  });
+
+  return (
+    <div ref={ref} className="sidebar">
+      <div
+        ref={innerRef}
+        className="sidebar__inner"
+      >
+        {children}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Sidebar;
