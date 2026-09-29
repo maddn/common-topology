@@ -51,7 +51,7 @@ export const convertKeys = (data, replaceName) =>
 
 
 export function isFetching (items) {
-  return items && Object.values(items).some(value => value !== 'OK');
+  return items && Object.values(items).some(value => value === '');
 }
 
 export function useMemoizeWhenFetched(fetching) {

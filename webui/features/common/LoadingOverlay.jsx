@@ -11,7 +11,11 @@ const LoadingOverlay = React.forwardRef(
   const fetching = isFetching(items);
 
   useEffect(() => {
-    setTimeout(() => setOpacity(fetching || 0), fetching ? 0 : 1000);
+    const timeout = setTimeout(
+      () => setOpacity(fetching ? 1 : 0),
+      fetching ? 0 : 1000
+    );
+    return () => clearTimeout(timeout);
   }, [ fetching ]);
 
   return (
